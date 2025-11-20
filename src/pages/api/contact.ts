@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { sendContactEmail } from '../../lib/email';
 import { saveContactMessage } from '../../lib/db';
+import { incrementAndCheck } from '../../lib/rateLimiter';
 
 type Data = {
   success: boolean;
@@ -48,17 +49,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(400).json({ success: false, message: 'Missing required fields' });
   }
 
-  // rate limiting by IP
+  // rate limiting by IP (supports Vercel KV when `VERCEL_KV` env var is set)
   const ip =
     (req.headers['x-forwarded-for'] as string) ||
     (req.socket && (req.socket as any).remoteAddress) ||
     'unknown';
-  const now = Date.now();
-  const hits = rateMap.get(ip) || [];
-  const recent = hits.filter((t) => t > now - RATE_LIMIT_WINDOW_MS);
-  recent.push(now);
-  rateMap.set(ip, recent);
-  if (recent.length > RATE_LIMIT_MAX) {
+  const rl = await incrementAndCheck(ip, RATE_LIMIT_WINDOW_MS / 1000, RATE_LIMIT_MAX);
+  if (!rl.allowed) {
     return res.status(429).json({ success: false, message: 'Rate limit exceeded' });
   }
 

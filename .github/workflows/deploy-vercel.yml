@@ -10,9 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
       - name: Build
-        run: npm run build
+        run: pnpm run build
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v20
         with:
