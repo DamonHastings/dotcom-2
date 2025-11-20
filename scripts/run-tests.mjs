@@ -20,12 +20,40 @@ try {
     process.exit(code);
   }
 
-  // Fallback: spawn the CLI via npx which runs in ESM-capable node context
-  // This is more robust for CI where programmatic API surface may differ.
-  const cmd = 'npx';
-  const args = ['vitest', '--config', 'vitest.config.cjs', '--', '--run'];
-  const child = spawnSync(cmd, args, { stdio: 'inherit' });
-  process.exit(child.status ?? 1);
+  // Fallback 1: spawn a short ESM node process that imports and runs Vitest.
+  // Using `--input-type=module` ensures the child Node process treats the
+  // inline script as ESM and avoids CJS require() of ESM-only modules.
+  try {
+    const nodeArgs = [
+      '--input-type=module',
+      '-e',
+      "import('vitest').then(m=> (m.run??m.runVitest)?.({ run: true })).catch(e=>{ console.error(e); process.exit(1); })",
+    ];
+    const child = spawnSync(process.execPath, nodeArgs.concat(process.argv.slice(2)), { stdio: 'inherit' });
+    if (child.status !== null) process.exit(child.status);
+  } catch (e) {
+    // fall through to the next fallback
+  }
+
+  // Fallback 2: spawn the CLI via npx/pnpm which usually runs in an ESM-capable
+  // process on CI. Try `pnpm dlx` first (faster on pnpm-managed projects),
+  // then `npx` if pnpm isn't available.
+  const tryExec = (cmd, args) => {
+    try {
+      const result = spawnSync(cmd, args, { stdio: 'inherit' });
+      if (result.status === 0) process.exit(0);
+      // if non-zero, return the status to try other fallbacks
+      return result.status ?? 1;
+    } catch (err) {
+      return 1;
+    }
+  };
+
+  let status = tryExec('pnpm', ['dlx', 'vitest', '--', '--config', 'vitest.config.cjs', '--run']);
+  if (status !== 0) {
+    status = tryExec('npx', ['vitest', '--config', 'vitest.config.cjs', '--', '--run']);
+  }
+  process.exit(status ?? 1);
 } catch (err) {
   // eslint-disable-next-line no-console
   console.error('Failed to run vitest via ESM import or fallback CLI', err);
