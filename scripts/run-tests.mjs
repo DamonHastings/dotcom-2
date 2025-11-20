@@ -29,7 +29,9 @@ try {
       '-e',
       "import('vitest').then(m=> (m.run??m.runVitest)?.({ run: true })).catch(e=>{ console.error(e); process.exit(1); })",
     ];
-    const child = spawnSync(process.execPath, nodeArgs.concat(process.argv.slice(2)), { stdio: 'inherit' });
+    const child = spawnSync(process.execPath, nodeArgs.concat(process.argv.slice(2)), {
+      stdio: 'inherit',
+    });
     if (child.status !== null) process.exit(child.status);
   } catch (e) {
     // fall through to the next fallback
