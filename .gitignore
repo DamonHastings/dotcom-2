@@ -1,0 +1,13 @@
+# Node
+node_modules/
+.next/
+dist/
+.turbo/
+
+# Environment
+.env
+.env.*
+
+# Editor
+.vscode/
+*.swp
