@@ -1,4 +1,6 @@
+import React from 'react';
 import Link from 'next/link';
+import ThemeToggle from '../ThemeToggle';
 
 const Header = () => (
   <header className="border-b py-4">
@@ -6,24 +8,29 @@ const Header = () => (
       <Link href="/">
         <a className="font-bold text-xl">Your Name</a>
       </Link>
-      <nav>
-        <Link href="/projects">
-          <a className="mr-4">Projects</a>
-        </Link>
-        <Link href="/about">
-          <a className="mr-4">About</a>
-        </Link>
-        <Link href="/contact">
-          <a>Contact</a>
-        </Link>
-      </nav>
+      <div className="flex items-center">
+        <nav className="mr-4">
+          <Link href="/projects">
+            <a className="mr-4">Projects</a>
+          </Link>
+          <Link href="/about">
+            <a className="mr-4">About</a>
+          </Link>
+          <Link href="/contact">
+            <a>Contact</a>
+          </Link>
+        </nav>
+        <ThemeToggle />
+      </div>
     </div>
   </header>
 );
 
 const Footer = () => (
   <footer className="border-t py-6 mt-12">
-    <div className="max-w-4xl mx-auto px-4 text-sm text-muted-foreground">© {new Date().getFullYear()} Your Name</div>
+    <div className="max-w-4xl mx-auto px-4 text-sm text-muted-foreground">
+      © {new Date().getFullYear()} Your Name
+    </div>
   </footer>
 );
 

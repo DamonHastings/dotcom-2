@@ -11,3 +11,7 @@ dist/
 # Editor
 .vscode/
 *.swp
+
+# Vercel
+.vercel/
+.vercel

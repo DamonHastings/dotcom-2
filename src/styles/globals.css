@@ -7,7 +7,9 @@
   --color-text: #e6eef8;
 }
 
-html, body, #__next {
+html,
+body,
+#__next {
   height: 100%;
 }
 
