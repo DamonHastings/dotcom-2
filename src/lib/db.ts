@@ -9,14 +9,14 @@ export type ContactMessage = {
 
 async function getClient() {
   // lazy-load mongodb so tests can run without installation
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const { MongoClient } = require('mongodb');
+  const mongoModule = (await import('mongodb')) as any;
+  const MongoClient = mongoModule.MongoClient ?? mongoModule.default?.MongoClient ?? mongoModule;
 
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error('Missing MONGODB_URI');
 
   // reuse global client in serverless environment
-  const globalAny: any = globalThis as any;
+  const globalAny: any = global as any;
   if (globalAny.__mongoClient) return globalAny.__mongoClient;
 
   const client = new MongoClient(uri);

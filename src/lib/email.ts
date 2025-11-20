@@ -13,8 +13,8 @@ export async function sendContactEmail(payload: ContactPayload) {
   }
 
   // lazy-load to keep tests lightweight (so package isn't required at import time)
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const sgMail = require('@sendgrid/mail');
+  const sgModule = (await import('@sendgrid/mail')) as any;
+  const sgMail = sgModule.default ?? sgModule;
   sgMail.setApiKey(apiKey);
 
   const from = process.env.SENDGRID_FROM || `no-reply@${process.env.VERCEL_URL ?? 'example.com'}`;

@@ -11,7 +11,6 @@ type Data = {
 // Simple in-memory rate limiter. For production use a shared store (Redis).
 const RATE_LIMIT_WINDOW_MS = 60 * 60 * 1000; // 1 hour
 const RATE_LIMIT_MAX = 5; // max requests per window per IP
-const rateMap = new Map<string, number[]>();
 
 function stripTags(s: string) {
   return String(s)

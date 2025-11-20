@@ -17,8 +17,8 @@ export async function incrementAndCheck(
   if (process.env.VERCEL_KV) {
     try {
       // lazy-load @vercel/kv
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const { kv } = require('@vercel/kv');
+      const kvModule = (await import('@vercel/kv')) as any;
+      const kv = kvModule.kv ?? kvModule.default?.kv ?? kvModule;
       const key = `rate:${ip}`;
       // incr the key and set TTL on first creation
       const count = await kv.incr(key);
