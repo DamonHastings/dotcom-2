@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "test": "vitest",
+    "test": "vitest --config vitest.config.cjs",
     "test:ui": "vitest --ui",
     "build": "next build",
     "start": "next start",
