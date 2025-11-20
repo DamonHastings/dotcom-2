@@ -30,7 +30,7 @@ export async function incrementAndCheck(
     } catch (err) {
       // fall through to in-memory fallback
       // eslint-disable-next-line no-console
-      console.warn('Vercel KV rate limiter failed, falling back to memory', err?.message ?? err);
+      console.warn('Vercel KV rate limiter failed, falling back to memory', String(err));
     }
   }
 
