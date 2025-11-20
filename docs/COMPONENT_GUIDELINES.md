@@ -1,17 +1,21 @@
 **Component Guidelines**
 
 - **Avatar**: `src/components/Avatar`
+
   - Props: `src?: string`, `alt?: string`, `size?: number`
   - Use for user or project thumbnails; uses `next/image` for optimization. Add host domains in `next.config.js` if needed.
 
 - **Card**: `src/components/Card`
+
   - A simple container with light/dark backgrounds. Use for content blocks and project cards.
 
 - **ThemeToggle**: `src/components/ThemeToggle`
+
   - Toggles dark/light mode. It persists selection via `localStorage` and respects system preference.
   - For SSR hydration safety the component renders both icons and relies on CSS for visibility.
 
 - **Form controls**: `src/components/Form`
+
   - `Input` and `Textarea`: accessible labels, focus styles, and dark-mode support.
 
 - **Icons**: `src/components/icons.tsx`
@@ -20,11 +24,13 @@
 Examples
 
 Avatar:
+
 ```tsx
 <Avatar src="https://images.unsplash.com/..." alt="Author" size={64} />
 ```
 
 Card + CTA:
+
 ```tsx
 <Card>
   <h3>Featured</h3>
@@ -34,6 +40,7 @@ Card + CTA:
 ```
 
 Form:
+
 ```tsx
 <form>
   <Input label="Name" name="name" />
@@ -41,6 +48,7 @@ Form:
   <Button type="submit">Send</Button>
 </form>
 ```
+
 # Component Guidelines
 
 This document provides conventions and recommended props/behaviors for the core components used across the site.

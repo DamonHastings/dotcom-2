@@ -19,7 +19,9 @@ export default function Home() {
             <Avatar alt="Damon Hastings" size={64} />
             <div>
               <h1 className="text-3xl font-bold">Damon Hastings</h1>
-              <p className="text-sm text-muted-foreground">Software engineer — Frontend & product</p>
+              <p className="text-sm text-muted-foreground">
+                Software engineer — Frontend & product
+              </p>
             </div>
           </div>
 
