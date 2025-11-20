@@ -13,8 +13,8 @@ This feature bootstraps the project with a minimal Next.js + TypeScript + Tailwi
 - `src/components/Layout` and `src/components/Button` — basic components
 - `src/styles/globals.css` — Tailwind base imports
 
-How to run
-----------
+## How to run
+
 Install dependencies and run dev:
 
 ```bash
@@ -22,8 +22,8 @@ pnpm install
 pnpm dev
 ```
 
-Notes
------
+## Notes
+
 - This scaffold is intentionally minimal to provide a stable foundation. Next steps:
   - Add Tailwind tokens and theme config
   - Implement the contact API with reCAPTCHA and SendGrid
