@@ -14,7 +14,7 @@ body,
 }
 
 body {
-  @apply bg-white text-slate-900 antialiased;
+  @apply bg-white text-slate-900 antialiased font-sans;
 }
 
 /* light/dark tokens and utility helpers can go here */
