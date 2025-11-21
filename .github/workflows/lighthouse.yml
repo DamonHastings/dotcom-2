@@ -10,6 +10,9 @@ jobs:
   lighthouse:
     name: Lighthouse Audit
     runs-on: ubuntu-latest
+    env:
+      CHROME_PATH: /usr/bin/google-chrome-stable
+      LHCI_CHROME_FLAGS: '--no-sandbox --disable-dev-shm-usage --headless=new --disable-gpu'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,6 +34,11 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget gnupg2 ca-certificates
+<<<<<<< HEAD
+          # Common Chrome dependencies for headless execution
+          sudo apt-get install -y libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libgbm1 libxss1 libasound2 libx11-xcb1 fonts-liberation libpangocairo-1.0-0 libgtk-3-0
+=======
+>>>>>>> origin/main
           wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
           echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
           sudo apt-get update
@@ -42,10 +50,13 @@ jobs:
         run: pnpm run build
 
       - name: Start server
+<<<<<<< HEAD
+=======
         env:
           # Prefer the installed Chrome binary and pass safe headless flags for CI
           CHROME_PATH: /usr/bin/google-chrome-stable
           LHCI_CHROME_FLAGS: '--no-sandbox --disable-dev-shm-usage --headless=new'
+>>>>>>> origin/main
         run: |
           # Start the built Next.js server in the background for Lighthouse to audit
           pnpm start &
