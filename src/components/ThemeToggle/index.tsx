@@ -31,15 +31,23 @@ const Moon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 export default function ThemeToggle() {
-  const { theme, toggle } = useTheme();
+  const { toggle } = useTheme();
 
+  // Render both icons and rely on CSS (tailwind `dark:`) to toggle visibility.
+  // This prevents a hydration mismatch between server and client when theme
+  // is computed on the client (localStorage / prefers-color-scheme).
   return (
     <button
       aria-label="Toggle theme"
       onClick={toggle}
       className="p-2 rounded-md border bg-transparent hover:bg-gray-100 dark:hover:bg-gray-800"
     >
-      {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+      <span className="hidden dark:inline">
+        <Sun className="w-5 h-5" />
+      </span>
+      <span className="inline dark:hidden">
+        <Moon className="w-5 h-5" />
+      </span>
     </button>
   );
 }

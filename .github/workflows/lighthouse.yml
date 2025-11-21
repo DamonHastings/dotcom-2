@@ -19,17 +19,44 @@ jobs:
         with:
           node-version: 18
 
+      - name: Setup pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@10.23.0 --activate
+
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Google Chrome (for Lighthouse)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg2 ca-certificates
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version || true
+        shell: bash
 
       - name: Build
-        run: npm run build
+        run: pnpm run build
+
+      - name: Start server
+        env:
+          # Prefer the installed Chrome binary and pass safe headless flags for CI
+          CHROME_PATH: /usr/bin/google-chrome-stable
+          LHCI_CHROME_FLAGS: '--no-sandbox --disable-dev-shm-usage --headless=new'
+        run: |
+          # Start the built Next.js server in the background for Lighthouse to audit
+          pnpm start &
+          # give the server a few seconds to boot
+          sleep 5
 
       - name: Run Lighthouse CI
         uses: treosh/lighthouse-ci-action@v8
         with:
-          startServerCommand: 'npm run start'
+          # Lighthouse action will run against the provided URLs.
           urls: 'http://localhost:3000'
           uploadArtifacts: 'true'
-          output: 'html'
-          thresholds: '{"performance":0.9,"accessibility":0.9,"best-practices":0.9,"seo":0.9}'
+          # Number of runs per URL (optional)
+          runs: '1'

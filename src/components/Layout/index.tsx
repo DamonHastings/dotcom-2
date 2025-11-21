@@ -5,20 +5,18 @@ import ThemeToggle from '../ThemeToggle';
 const Header = () => (
   <header className="border-b py-4">
     <div className="max-w-4xl mx-auto flex items-center justify-between px-4">
-      <Link href="/">
-        <a className="font-bold text-xl">Your Name</a>
+      <Link href="/" className="font-bold text-xl">
+        Your Name
       </Link>
       <div className="flex items-center">
         <nav className="mr-4">
-          <Link href="/projects">
-            <a className="mr-4">Projects</a>
+          <Link href="/projects" className="mr-4">
+            Projects
           </Link>
-          <Link href="/about">
-            <a className="mr-4">About</a>
+          <Link href="/about" className="mr-4">
+            About
           </Link>
-          <Link href="/contact">
-            <a>Contact</a>
-          </Link>
+          <Link href="/contact">Contact</Link>
         </nav>
         <ThemeToggle />
       </div>
