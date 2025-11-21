@@ -7,13 +7,16 @@ export interface LeadTextProps {
   as?: keyof JSX.IntrinsicElements;
 }
 
-export function LeadText({ heading, children, className = '', as: HeadingTag = 'h2' }: LeadTextProps) {
+export function LeadText({
+  heading,
+  children,
+  className = '',
+  as: HeadingTag = 'h2',
+}: LeadTextProps) {
   return (
-    <div className={`space-y-3 ${className}`}> 
+    <div className={`space-y-3 ${className}`}>
       <HeadingTag className="text-xl md:text-2xl font-semibold leading-snug">{heading}</HeadingTag>
-      {children && (
-        <p className="text-sm md:text-base text-gray-700 dark:text-gray-300 leading-relaxed">{children}</p>
-      )}
+      {children && <p className="text-sm md:text-base leading-relaxed">{children}</p>}
     </div>
   );
 }

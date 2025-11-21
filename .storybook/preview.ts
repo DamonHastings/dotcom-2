@@ -1,3 +1,4 @@
+import '../src/styles/globals.css';
 import type { Preview } from '@storybook/react';
 
 // Polyfill process for Next.js client code when running under Storybook Vite
@@ -9,8 +10,8 @@ const preview: Preview = {
   parameters: {
     controls: {
       matchers: {
-       color: /(background|color)$/i,
-       date: /Date$/i,
+        color: /(background|color)$/i,
+        date: /Date$/i,
       },
     },
   },

@@ -9,9 +9,15 @@ export interface ProjectCardProps {
   arrow?: boolean; // display arrow icon overlay (for 'more' card)
 }
 
-export function ProjectCard({ title, subtitle, image, className = '', arrow = false }: ProjectCardProps) {
+export function ProjectCard({
+  title,
+  subtitle,
+  image,
+  className = '',
+  arrow = false,
+}: ProjectCardProps) {
   return (
-    <div className={`flex flex-col ${className}`}> 
+    <div className={`flex flex-col ${className}`}>
       <Card className="p-0 aspect-square flex items-center justify-center bg-pink-200 dark:bg-pink-300/20 relative">
         {image}
         {arrow && (

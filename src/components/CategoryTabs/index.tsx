@@ -7,10 +7,15 @@ export interface CategoryTabsProps {
   className?: string;
 }
 
-export function CategoryTabs({ categories, initialActive = 0, onChange, className = '' }: CategoryTabsProps) {
+export function CategoryTabs({
+  categories,
+  initialActive = 0,
+  onChange,
+  className = '',
+}: CategoryTabsProps) {
   const [active, setActive] = useState(initialActive);
   return (
-    <div className={`flex flex-wrap items-end gap-10 text-sm md:text-base ${className}`}> 
+    <div className={`flex flex-wrap items-end gap-10 text-sm md:text-base ${className}`}>
       {categories.map((cat, i) => {
         const isActive = i === active;
         return (
@@ -22,7 +27,7 @@ export function CategoryTabs({ categories, initialActive = 0, onChange, classNam
               onChange?.(i);
             }}
             className={`relative font-semibold pb-3 transition-colors ${
-              isActive ? 'text-gray-900 dark:text-gray-100' : 'text-gray-600 dark:text-gray-400'
+              isActive ? 'text-gray-900 dark:text-black' : 'text-gray-600 dark:text-gray-400'
             }`}
           >
             {cat}

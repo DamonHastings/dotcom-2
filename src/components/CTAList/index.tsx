@@ -15,7 +15,7 @@ export interface CTAListProps {
 
 export function CTAList({ primary, secondary, className = '', divider = true }: CTAListProps) {
   return (
-    <div className={`flex flex-col gap-4 text-sm ${className}`}> 
+    <div className={`flex flex-col gap-4 text-sm ${className}`}>
       <div className="space-y-1">
         {primary.map((item) => (
           <ArrowLink key={item.href} href={item.href}>
