@@ -27,10 +27,25 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Install Google Chrome (for Lighthouse)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg2 ca-certificates
+          wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
+          echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" | sudo tee /etc/apt/sources.list.d/google-chrome.list
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+          google-chrome --version || true
+        shell: bash
+
       - name: Build
         run: pnpm run build
 
       - name: Start server
+        env:
+          # Prefer the installed Chrome binary and pass safe headless flags for CI
+          CHROME_PATH: /usr/bin/google-chrome-stable
+          LHCI_CHROME_FLAGS: '--no-sandbox --disable-dev-shm-usage --headless=new'
         run: |
           # Start the built Next.js server in the background for Lighthouse to audit
           pnpm start &
