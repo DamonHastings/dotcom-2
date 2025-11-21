@@ -1,12 +1,9 @@
 import { Html, Head, Main, NextScript } from 'next/document';
-import { Inter } from 'next/font/google';
-
-// Re-declare Inter here so the font variables/class apply at the html root during SSR.
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 
 export default function Document() {
+  // Do NOT use next/font in _document; Next.js renders font styles differently and throws errors.
   return (
-    <Html className={`${inter.variable} ${inter.className}`} lang="en">
+    <Html lang="en">
       <Head />
       <body>
         <Main />
