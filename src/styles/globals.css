@@ -14,7 +14,12 @@ body,
 }
 
 body {
-  @apply bg-white text-slate-900 antialiased font-sans;
+  @apply bg-white antialiased font-sans;
+  color: #0f172a;
+}
+
+html.dark body {
+  color: #e6eef8;
 }
 
 /* light/dark tokens and utility helpers can go here */
