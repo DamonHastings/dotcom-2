@@ -1,56 +1,65 @@
 import Head from 'next/head';
-import Avatar from '@/components/Avatar';
-import Card from '@/components/Card';
-import Button from '@/components/Button';
-import Input from '@/components/Form/Input';
-import Textarea from '@/components/Form/Textarea';
-import { IconGithub, IconMail } from '@/components/icons';
+import HeroHeading from '@/components/HeroHeading';
+import LeadText from '@/components/LeadText';
+import CTAList from '@/components/CTAList';
+import CategoryTabs from '@/components/CategoryTabs';
+import ProjectGrid from '@/components/ProjectGrid';
+
+// Sample project data for grid (replace with real data later)
+const projects = [
+  { title: 'Project 1', subtitle: 'Panta | Brand Design' },
+  { title: 'Project 2', subtitle: 'Panta | Web App' },
+  { title: 'Project 3', subtitle: 'Panta | Marketing Site' },
+  { title: 'Project 4', subtitle: 'Panta | Mobile UX' },
+  { title: 'Project 5', subtitle: 'Panta | Automation' },
+  { title: 'Project 6', subtitle: 'Panta | Data Viz' },
+  { title: 'Project 7', subtitle: 'Panta | Design System' },
+  { title: 'More Work', subtitle: 'Browse All', arrow: true },
+];
 
 export default function Home() {
   return (
     <>
       <Head>
-        <title>Home — Portfolio</title>
-        <meta name="description" content="Portfolio site" />
+        <title>Panta — Product & Design</title>
+        <meta name="description" content="Panta portfolio and product work" />
       </Head>
-      <main className="min-h-screen px-6 py-12">
-        <section className="max-w-3xl mx-auto">
-          <div className="flex items-center gap-4 mb-6">
-            <Avatar alt="Damon Hastings" size={64} />
-            <div>
-              <h1 className="text-3xl font-bold">Damon Hastings</h1>
-              <p className="text-sm text-muted-foreground">
-                Software engineer — Frontend & product
-              </p>
-            </div>
+      <main className="px-6 py-16 md:py-24">
+        <section className="max-w-6xl mx-auto grid gap-12 md:grid-cols-2 md:gap-20 mb-20">
+          <div>
+            <HeroHeading
+              lines={[
+                'Crafting product experiences',
+                'that move metrics',
+                'and feel effortless.',
+              ]}
+            />
           </div>
+          <div className="space-y-8">
+            <LeadText heading="Product & Design at Panta">
+              A collection of work exploring interface design, interaction patterns, brand
+              development, and the systems that support rapid experimentation.
+            </LeadText>
+            <CTAList
+              primary={[
+                { label: 'Latest case study', href: '/projects/latest' },
+                { label: 'Design system', href: '/projects/design-system' },
+                { label: 'Get in touch', href: '/contact' },
+              ]}
+              secondary={[
+                { label: 'About Panta', href: '/about' },
+                { label: 'All projects', href: '/projects' },
+              ]}
+            />
+          </div>
+        </section>
 
-          <Card className="mb-6">
-            <h2 className="text-xl font-semibold mb-2">About</h2>
-            <p className="text-sm text-muted-foreground mb-4">
-              This starter portfolio includes a small component library and an example contact form.
-            </p>
-            <div className="flex gap-3">
-              <Button>
-                <IconGithub className="w-4 h-4 mr-2 inline" /> View code
-              </Button>
-              <Button variant="secondary">
-                <IconMail className="w-4 h-4 mr-2 inline" /> Contact
-              </Button>
-            </div>
-          </Card>
+        <section className="max-w-6xl mx-auto mb-12">
+          <CategoryTabs categories={['Featured', 'Product', 'Design', 'Systems']} />
+        </section>
 
-          <Card>
-            <h3 className="text-lg font-medium mb-3">Contact</h3>
-            <form className="space-y-3">
-              <Input label="Name" name="name" />
-              <Input label="Email" type="email" name="email" />
-              <Textarea label="Message" name="message" />
-              <div>
-                <Button type="submit">Send message</Button>
-              </div>
-            </form>
-          </Card>
+        <section className="max-w-6xl mx-auto mb-24">
+          <ProjectGrid projects={projects} />
         </section>
       </main>
     </>
