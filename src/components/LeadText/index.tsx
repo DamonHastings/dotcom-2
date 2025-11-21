@@ -1,4 +1,5 @@
 import React from 'react';
+import type { JSX } from 'react';
 
 export interface LeadTextProps {
   heading: string;

@@ -1,4 +1,4 @@
-import React from 'react';
+// React import removed (unused)
 import Button from './index';
 import type { Meta, StoryObj } from '@storybook/react';
 

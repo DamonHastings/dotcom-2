@@ -4,20 +4,35 @@ import LeadText from '@/components/LeadText';
 import CTAList from '@/components/CTAList';
 import CategoryTabs from '@/components/CategoryTabs';
 import ProjectCarousel from '@/components/ProjectCarousel';
+import { fetchProjects } from '@/lib/sanity';
+// Image import removed (unused)
 
-// Sample project data for grid (replace with real data later)
-const projects = [
-  { title: 'Project 1', subtitle: 'Panta | Brand Design' },
-  { title: 'Project 2', subtitle: 'Panta | Web App' },
-  { title: 'Project 3', subtitle: 'Panta | Marketing Site' },
-  { title: 'Project 4', subtitle: 'Panta | Mobile UX' },
-  { title: 'Project 5', subtitle: 'Panta | Automation' },
-  { title: 'Project 6', subtitle: 'Panta | Data Viz' },
-  { title: 'Project 7', subtitle: 'Panta | Design System' },
-  { title: 'More Work', subtitle: 'Browse All', arrow: true },
-];
+interface HomeProps {
+  projects: {
+    _id: string;
+    title: string;
+    subtitle: string;
+    slug?: { current: string };
+    status?: string;
+    coverImage?: { _type?: 'image'; asset?: { _ref: string } };
+  }[];
+}
 
-export default function Home() {
+export async function getStaticProps() {
+  let projects = [] as HomeProps['projects'];
+  try {
+    projects = await fetchProjects();
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to fetch projects from Sanity', e);
+  }
+  return {
+    props: { projects },
+    revalidate: 60, // ISR every minute
+  };
+}
+
+export default function Home({ projects }: HomeProps) {
   return (
     <>
       <Head>
@@ -53,7 +68,13 @@ export default function Home() {
         </section>
 
         <section className="max-w-6xl mx-auto mb-24">
-          <ProjectCarousel projects={projects} intervalMs={3500} />
+          <ProjectCarousel
+            projects={projects.map((p) => ({
+              title: p.title,
+              subtitle: p.subtitle || 'Panta',
+              coverImage: p.coverImage,
+            }))}
+          />
         </section>
       </main>
     </>

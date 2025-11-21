@@ -1,4 +1,5 @@
 import React from 'react';
+import type { JSX } from 'react';
 
 export type HeroHeadingProps = {
   lines: string[]; // each array item becomes its own line
