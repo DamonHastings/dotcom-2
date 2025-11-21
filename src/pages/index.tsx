@@ -3,7 +3,7 @@ import HeroHeading from '@/components/HeroHeading';
 import LeadText from '@/components/LeadText';
 import CTAList from '@/components/CTAList';
 import CategoryTabs from '@/components/CategoryTabs';
-import ProjectGrid from '@/components/ProjectGrid';
+import ProjectCarousel from '@/components/ProjectCarousel';
 
 // Sample project data for grid (replace with real data later)
 const projects = [
@@ -27,13 +27,7 @@ export default function Home() {
       <main className="px-6 py-16 md:py-24">
         <section className="max-w-6xl mx-auto grid gap-12 md:grid-cols-2 md:gap-20 mb-20">
           <div>
-            <HeroHeading
-              lines={[
-                'Crafting product experiences',
-                'that move metrics',
-                'and feel effortless.',
-              ]}
-            />
+            <HeroHeading lines={['Software Engineer.', 'Digital Artist.', 'Creative Producer.']} />
           </div>
           <div className="space-y-8">
             <LeadText heading="Product & Design at Panta">
@@ -59,7 +53,7 @@ export default function Home() {
         </section>
 
         <section className="max-w-6xl mx-auto mb-24">
-          <ProjectGrid projects={projects} />
+          <ProjectCarousel projects={projects} intervalMs={3500} />
         </section>
       </main>
     </>
