@@ -14,15 +14,23 @@
   "extends": [
     "next/core-web-vitals",
     "eslint:recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:storybook/recommended"
   ],
-  "plugins": ["@typescript-eslint"],
+  "plugins": [
+    "@typescript-eslint"
+  ],
   "rules": {
     "react/react-in-jsx-scope": "off"
   },
   "overrides": [
     {
-      "files": ["src/lib/**", "src/pages/api/**", "**/*.test.ts", "**/*.test.tsx"],
+      "files": [
+        "src/lib/**",
+        "src/pages/api/**",
+        "**/*.test.ts",
+        "**/*.test.tsx"
+      ],
       "rules": {
         "@typescript-eslint/no-explicit-any": "off"
       }
