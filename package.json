@@ -28,6 +28,7 @@
     "embla-carousel-react": "^8.6.0",
     "mongodb": "^5.9.2",
     "next": "^14.0.0",
+    "@portabletext/react": "^2.0.0",
     "next-sanity": "^4.3.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",

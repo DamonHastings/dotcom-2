@@ -11,17 +11,17 @@ export interface ArrowLinkProps {
 export function ArrowLink({ href, children, className = '', inline = false }: ArrowLinkProps) {
   const base = inline ? 'inline-flex' : 'flex';
   return (
-    <Link
-      href={href}
-      className={`${base} items-center gap-1 text-sm md:text-base font-medium group ${className}`}
+    <div
+      key={href}
+      className={`mb-4 bg-cyan-100 p-2 sm:p-3 px-4 rounded group transition-transform duration-150 ease-out md:hover:-translate-y-1 ${className}`}
     >
-      <span className="group-hover:underline underline-offset-4 decoration-gray-400 transition">
-        {children}
-      </span>
-      <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
-        →
-      </span>
-    </Link>
+      <Link href={href} className={`${base} items-center gap-1 text-md md:text-base font-bold`}>
+        <span className="transition-colors">{children}</span>
+        <span aria-hidden className="transition-transform group-hover:translate-x-1 ml-1">
+          →
+        </span>
+      </Link>
+    </div>
   );
 }
 

@@ -16,7 +16,18 @@ export function LeadText({
 }: LeadTextProps) {
   return (
     <div className={`space-y-3 ${className}`}>
-      <HeadingTag className="text-xl md:text-2xl font-semibold leading-snug">{heading}</HeadingTag>
+      <div className="relative max-w-xl">
+        <div className="bg-emerald-100 rounded-2xl p-6 shadow-lg">
+          <HeadingTag className="text-2xl md:text-3xl font-semibold leading-snug">
+            {heading}
+          </HeadingTag>
+          {/* speech bubble tail pointing right */}
+          <div
+            aria-hidden="true"
+            className="w-4 h-4 bg-emerald-100 shadow-lg transform rotate-45 absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2"
+          />
+        </div>
+      </div>
       {children && <p className="text-sm md:text-base leading-relaxed">{children}</p>}
     </div>
   );

@@ -72,6 +72,41 @@ export default defineType({
       validation: (Rule) => Rule.email(),
     }),
     defineField({
+      name: 'social',
+      title: 'Social Links',
+      type: 'array',
+      of: [
+        defineType({
+          name: 'socialLink',
+          title: 'Social Link',
+          type: 'object',
+          fields: [
+            defineField({
+              name: 'platform',
+              title: 'Platform',
+              type: 'string',
+              options: {
+                list: [
+                  { title: 'GitHub', value: 'github' },
+                  { title: 'LinkedIn', value: 'linkedin' },
+                  { title: 'Twitter', value: 'twitter' },
+                  { title: 'Dribbble', value: 'dribbble' },
+                  { title: 'Instagram', value: 'instagram' },
+                ],
+              },
+              validation: (Rule) => Rule.required(),
+            }),
+            defineField({
+              name: 'url',
+              title: 'URL',
+              type: 'url',
+              validation: (Rule) => Rule.required(),
+            }),
+          ],
+        }),
+      ],
+    }),
+    defineField({
       name: 'order',
       title: 'Order',
       type: 'number',
