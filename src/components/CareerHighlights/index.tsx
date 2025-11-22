@@ -21,7 +21,7 @@ export default function CareerHighlights({ items }: { items?: HighlightItem[] })
         {list.map((it, i) => (
           <div key={i} className="bg-white/80 dark:bg-rose-200/70 rounded-lg px-4 py-3 shadow-md">
             <div className="text-xs text-muted-foreground uppercase tracking-wide">{it.label}</div>
-            <div className="text-xl font-extrabold mt-1">{it.value}</div>
+            <div className="text-xl font-bold mt-1">{it.value}</div>
             {it.note ? <div className="text-sm text-muted-foreground mt-1">{it.note}</div> : null}
           </div>
         ))}

@@ -124,23 +124,22 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
           }
         />
       </Head>
-      <main className="px-6 py-16 md:py-10">
-        <section className="relative max-w-6xl mx-auto grid md:gap-12 md:grid-cols-2 gap-12 mb-20 mt-20">
+      <main className="px-6">
+        <section className="relative max-w-6xl mx-auto grid md:gap-12 md:grid-cols-2 gap-1 mt-0 mb-0 md:mb-20 md:mt-20">
           {/* Background hero image positioned bottom-left */}
-          {console.log('Rendering hero image:', heroImageUrl)}
           {true ? (
             <>
-              <div className="pointer-events-none absolute bottom-0 left-0">
+              <div className="pointer-events-none md:absolute md:bottom-0 md:left-0">
                 {/* Decorative background image: hide from assistive tech and provide sr-only text for context */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={heroImageUrl}
                   alt=""
                   aria-hidden="true"
-                  className="w-64 md:w-[610px] opacity-90 rounded"
+                  className="w-100 md:w-[610px] opacity-90 rounded"
                 />
                 <div className="sr-only">{heroImageAlt}</div>
-                <div className="absolute bottom-0 left-0 bg-white w-full  p-5 pl-8 left-6">
+                <div className="md:absolute md:bottom-0 md:left-6 bg-white w-full p-5 pl-8">
                   <HeroHeading lines={heroLines} />
                 </div>
               </div>
@@ -150,7 +149,7 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
             <HeroHeading lines={heroLines} />
           )}
 
-          <div className="space-y-8 z-10">
+          <div className="space-y-8 z-10 mb-10">
             {/* {heroImageUrl && <HeroHeading lines={heroLines} />} */}
             <LeadText heading={headingTagline}>{introSummary}</LeadText>
             <CTAList primary={primaryCtas} secondary={secondaryCtas} />
