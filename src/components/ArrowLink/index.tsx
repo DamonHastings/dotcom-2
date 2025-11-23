@@ -13,7 +13,7 @@ export function ArrowLink({ href, children, className = '', inline = false }: Ar
   return (
     <div
       key={href}
-      className={`mb-4 bg-cyan-100 p-2 sm:p-3 px-4 rounded group transition-transform duration-150 ease-out md:hover:-translate-y-1 ${className}`}
+      className={`mb-4 bg-gray-100 p-2 sm:p-3 px-4 rounded group transition-transform duration-150 ease-out md:hover:-translate-y-1 ${className}`}
     >
       <Link href={href} className={`${base} items-center gap-1 text-md md:text-base font-bold`}>
         <span className="transition-colors">{children}</span>

@@ -86,9 +86,9 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
   const primaryCtas = landing?.primaryCtas?.length
     ? landing.primaryCtas
     : [
-        { label: 'Latest case study', href: '/projects/latest' },
-        { label: 'Design system', href: '/projects/design-system' },
-        { label: 'Get in touch', href: '/contact' },
+        // { label: 'Latest case study', href: '/projects/latest' },
+        // { label: 'Design system', href: '/projects/design-system' },
+        // { label: 'Get in touch', href: '/contact' },
       ];
   const secondaryCtas = landing?.secondaryCtas?.length
     ? landing.secondaryCtas
@@ -125,32 +125,30 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
         />
       </Head>
       <main className="px-6">
-        <section className="relative max-w-6xl mx-auto grid md:gap-12 md:grid-cols-2 gap-1 mt-0 mb-0 md:mb-20 md:mt-20">
-          {/* Background hero image positioned bottom-left */}
-          {true ? (
-            <>
+        <section className="relative max-w-6xl mx-auto grid grid-cols-12 gap-6 md:gap-12 mt-0 mb-0 md:mb-5 md:mt-5">
+          {/* Hero - 12 column grid: left 8 cols (visual + heading), right 4 cols (lead + ctas) */}
+
+          <div className="col-span-12 md:col-span-8 relative">
+            {/* Decorative background image positioned bottom-left for md+ */}
+            {/* {heroImageUrl && (
               <div className="pointer-events-none md:absolute md:bottom-0 md:left-0">
-                {/* Decorative background image: hide from assistive tech and provide sr-only text for context */}
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={heroImageUrl}
                   alt=""
                   aria-hidden="true"
-                  className="w-100 md:w-[610px] opacity-90 rounded"
+                  className="w-full md:w-[610px] opacity-90 rounded"
                 />
                 <div className="sr-only">{heroImageAlt}</div>
-                <div className="md:absolute md:bottom-0 md:left-6 bg-white w-full p-5 pl-8">
-                  <HeroHeading lines={heroLines} />
-                </div>
               </div>
-              <div>{/* left column intentionally empty when background image present */}</div>
-            </>
-          ) : (
-            <HeroHeading lines={heroLines} />
-          )}
+            )} */}
 
-          <div className="space-y-8 z-10 mb-10">
-            {/* {heroImageUrl && <HeroHeading lines={heroLines} />} */}
+            {/* Heading overlay — use relative positioning on small screens and absolute on md */}
+            <div className="relative md:absolute md:bottom-4 md:left-6 bg-transparent md:bg-white md:p-5 md:pl-8">
+              <HeroHeading lines={heroLines} />
+            </div>
+          </div>
+
+          <div className="col-span-12 md:col-span-4 space-y-8 z-10 mb-10">
             <LeadText heading={headingTagline}>{introSummary}</LeadText>
             <CTAList primary={primaryCtas} secondary={secondaryCtas} />
           </div>
@@ -160,14 +158,14 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
 
         <ExperienceList experiences={experiences} />
 
-        <section className="max-w-6xl mx-auto mb-12">
+        {/* <section className="max-w-6xl mx-auto mb-12">
           <h2 className="text-2xl font-bold mb-2">Things I've Done</h2>
           <CategoryTabs categories={['Featured', 'Product', 'Design', 'Systems']} />
         </section>
 
         <section className="max-w-6xl mx-auto mb-24">
           <ProjectCarousel projects={featuredProjects} />
-        </section>
+        </section> */}
       </main>
     </>
   );

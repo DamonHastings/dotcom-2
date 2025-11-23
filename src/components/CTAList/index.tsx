@@ -16,12 +16,12 @@ export interface CTAListProps {
 export function CTAList({ primary, secondary, className = '', divider = true }: CTAListProps) {
   return (
     <div className={`flex flex-col gap-4 text-sm ${className}`}>
-      <div className="space-y-1 bg-primary/5">
+      {/* <div className="space-y-1 bg-primary/5">
         {primary.map((item) => (
           <ArrowLink href={item.href}>{item.label}</ArrowLink>
         ))}
       </div>
-      {secondary && divider && <hr className="border-gray-300 dark:border-gray-600" />}
+      {secondary && divider && <hr className="border-gray-300 dark:border-gray-600" />} */}
       {secondary && (
         <div className="space-y-1">
           {secondary.map((item) => (
