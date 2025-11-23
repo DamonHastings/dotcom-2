@@ -6,6 +6,7 @@ import CategoryTabs from '@/components/CategoryTabs';
 import ProjectCarousel from '@/components/ProjectCarousel';
 import ExperienceList from '@/components/ExperienceList';
 import CareerHighlights from '@/components/CareerHighlights';
+import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
 import {
   fetchProjects,
   fetchSiteInfo,
@@ -96,6 +97,12 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
         { label: 'About Panta', href: '/about' },
         { label: 'All projects', href: '/projects' },
       ];
+
+  const timeline: TimelineEntry[] = [
+    { year: 2015, title: 'Junior SWE', skills: { JavaScript: 40, React: 20, Design: 10 } },
+    { year: 2018, title: 'Mid SWE', skills: { JavaScript: 70, React: 60, Design: 25 } },
+    { year: 2022, title: 'Senior SWE', skills: { JavaScript: 90, React: 85, Design: 50 } },
+  ];
   const featuredProjects = (
     landing?.featuredProjects?.length ? landing.featuredProjects : projects
   ).map((p) => ({
@@ -155,6 +162,7 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
         </section>
 
         <CareerHighlights />
+        <SkillTimeline timeline={timeline} />
 
         <ExperienceList experiences={experiences} />
 
