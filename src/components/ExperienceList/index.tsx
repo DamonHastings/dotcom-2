@@ -7,7 +7,7 @@ interface Props {
   experiences: Experience[];
 }
 
-type Tab = 'story' | 'resume';
+type Tab = 'story' | 'highlights';
 
 const ptComponents: any = {
   types: {
@@ -126,7 +126,7 @@ export default function ExperienceList({ experiences }: Props) {
                 {first.resume?.bullets && first.resume.bullets.length ? (
                   <ul className="mt-3 list-disc list-inside">
                     {first.resume.bullets.map((b, i) => (
-                      <li key={i} className="text-sm">
+                      <li key={i} className="text-sm mb-3">
                         {b}
                       </li>
                     ))}
@@ -146,12 +146,12 @@ export default function ExperienceList({ experiences }: Props) {
                   Story
                 </button>
                 <button
-                  onClick={() => toggleFor(first._id, 'resume')}
+                  onClick={() => toggleFor(first._id, 'highlights')}
                   className={`px-3 py-1 text-sm font-bold rounded-md ${
-                    getTabFor(first._id) === 'resume' ? 'bg-orange-200' : 'bg-white'
+                    getTabFor(first._id) === 'highlights' ? 'bg-orange-200' : 'bg-white'
                   }`}
                 >
-                  Resume
+                  Highlights
                 </button>
               </div>
             </div>
