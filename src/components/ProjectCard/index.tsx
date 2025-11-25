@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from '../Card';
 import Image from 'next/image';
-import { urlFor } from '@/lib/sanity';
+import { urlFor } from '../../lib/sanity';
 
 type SanityImage = { _type?: 'image'; asset?: { _ref: string } };
 

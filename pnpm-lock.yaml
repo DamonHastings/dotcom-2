@@ -47,6 +47,9 @@ importers:
       react-dom:
         specifier: ^18.0.0
         version: 18.3.1(react@18.3.1)
+      react-flip-toolkit:
+        specifier: ^7.2.4
+        version: 7.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sanity:
         specifier: ^4.17.0
         version: 4.17.0(@emotion/is-prop-valid@1.2.2)(@portabletext/sanity-bridge@1.2.3(@sanity/schema@4.17.0(@types/react@19.2.6)(debug@4.4.3))(@sanity/types@4.17.0(@types/react@19.2.6)(debug@4.4.3)))(@types/node@24.10.1)(@types/react@19.2.6)(immer@10.2.0)(jiti@2.6.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(terser@5.44.1)(typescript@5.3.3)(yaml@2.8.1)
@@ -4989,6 +4992,10 @@ packages:
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
 
+  flip-toolkit@7.2.4:
+    resolution: {integrity: sha512-NT81ikyHPk72riMe1U01x698YIMSypMF5mQBhRklWVgf2xgWH3EPfrrVRAkz/+TSCq0rLPsr/uKIYkwHrowKZQ==}
+    engines: {node: '>=8', npm: '>=5'}
+
   flow-parser@0.291.0:
     resolution: {integrity: sha512-MLqjFn72Dvndqrkjy280HaIs4AV9Z6nxVRmNPO3TjbYcipg4hR7QX7tEYZYsVvaaZWZPGe6Mithluk2aPGlDOw==}
     engines: {node: '>=0.4.0'}
@@ -6870,6 +6877,13 @@ packages:
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
+  react-flip-toolkit@7.2.4:
+    resolution: {integrity: sha512-+aZBZwzHBDfJzMRLjAAOKiBkrk8PV0YFVE0k1x85+UsykApLwg8a0LlQ5H80uFltFZmGtrQ7EE1krhiZ1jI5ig==}
+    engines: {node: '>=8', npm: '>=5'}
+    peerDependencies:
+      react: '>= 16.x'
+      react-dom: '>= 16.x'
+
   react-focus-lock@2.13.6:
     resolution: {integrity: sha512-ehylFFWyYtBKXjAO9+3v8d0i+cnc1trGS0vlTGhzFW1vbFXVUTmR8s2tt/ZQG8x5hElg6rhENlLG1H3EZK0Llg==}
     peerDependencies:
@@ -7038,6 +7052,9 @@ packages:
 
   remark-slug@6.1.0:
     resolution: {integrity: sha512-oGCxDF9deA8phWvxFuyr3oSJsdyUAxMFbA0mZ7Y1Sas+emILtO+e5WutF9564gDsEN4IXaQXm5pFo6MLH+YmwQ==}
+
+  rematrix@0.2.2:
+    resolution: {integrity: sha512-agFFS3RzrLXJl5LY5xg/xYyXvUuVAnkhgKO7RaO9J1Ssth6yvbO+PIiV67V59MB5NCdAK2flvGvNT4mdKVniFA==}
 
   remeda@2.32.0:
     resolution: {integrity: sha512-BZx9DsT4FAgXDTOdgJIc5eY6ECIXMwtlSPQoPglF20ycSWigttDDe88AozEsPPT4OWk5NujroGSBC1phw5uU+w==}
@@ -14240,6 +14257,10 @@ snapshots:
 
   flatted@3.3.3: {}
 
+  flip-toolkit@7.2.4:
+    dependencies:
+      rematrix: 0.2.2
+
   flow-parser@0.291.0: {}
 
   flush-write-stream@2.0.0:
@@ -16180,6 +16201,13 @@ snapshots:
 
   react-fast-compare@3.2.2: {}
 
+  react-flip-toolkit@7.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      flip-toolkit: 7.2.4
+      prop-types: 15.8.1
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   react-focus-lock@2.13.6(@types/react@19.2.6)(react@18.3.1):
     dependencies:
       '@babel/runtime': 7.28.4
@@ -16394,6 +16422,8 @@ snapshots:
       github-slugger: 1.5.0
       mdast-util-to-string: 1.1.0
       unist-util-visit: 2.0.3
+
+  rematrix@0.2.2: {}
 
   remeda@2.32.0:
     dependencies:

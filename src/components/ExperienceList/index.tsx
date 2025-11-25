@@ -4,6 +4,7 @@ import { type Experience } from '@/lib/sanity';
 // Note: moved the "View All" control below the component; no link import needed here
 import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
 import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
+import Timeline from '@/components/Timeline';
 import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
 interface Props {
@@ -206,11 +207,7 @@ export default function ExperienceList(props: Props) {
             </div>
             <div className="col-span-4 self-start">
               <div className="sticky top-16 z-20">
-                <SkillTimeline
-                  timeline={timeline}
-                  activeIndex={cardIndexValue}
-                  onSelectedIndexChange={(i) => goto(i)}
-                />
+                <Timeline experiences={experiences} />
               </div>
             </div>
           </div>

@@ -29,7 +29,7 @@ export default function Experience({ experiences, timelinesById, timeline }: Pro
       <div className="grid grid-cols-12 gap-6 items-start">
         <div className="col-span-12 md:col-span-4">
           {selectedTimeline && selectedTimeline.length ? (
-            <SkillTimeline timeline={selectedTimeline} />
+            <Timeline entries={selectedTimeline} />
           ) : (
             <div className="p-4 bg-gray-50 rounded">
               No timeline data provided for this experience.
