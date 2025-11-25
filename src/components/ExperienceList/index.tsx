@@ -3,7 +3,7 @@ import { PortableText } from '@portabletext/react';
 import { type Experience } from '@/lib/sanity';
 // Note: moved the "View All" control below the component; no link import needed here
 import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
-import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
+import type { TimelineEntry } from '@/components/SkillTimeline';
 import Timeline from '@/components/Timeline';
 import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
@@ -36,6 +36,8 @@ export default function ExperienceList(props: Props) {
 
   const count = experiences.length;
   const goto = (i: number) => setCardIndex(((i % count) + count) % count);
+  // track which index to return to when leaving story/card view so we can scroll back
+  const [returnToIndex, setReturnToIndex] = useState<number | null>(null);
 
   return (
     <section className="max-w-6xl mx-auto mb-12">
@@ -93,6 +95,7 @@ export default function ExperienceList(props: Props) {
             <div className="col-span-8">
               {experiences.map((exp, idx) => (
                 <article
+                  id={`experience-${exp._id}`}
                   key={exp._id}
                   className="relative grid gap-6 md:grid-cols-12 md:items-start mb-10 col-span-8"
                   onClick={() => {
@@ -200,6 +203,22 @@ export default function ExperienceList(props: Props) {
                       </div>
                     )}
                     {/* spacer to separate items visually */}
+                    {/* View Story button bottom-right of each experience */}
+                    <div className="right-0 bottom-0 mr-0 mb-0 flex justify-end">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // remember where we came from so we can scroll back
+                          setReturnToIndex(idx);
+                          setCardIndex(idx);
+                          setViewTab('story');
+                          setMode('card');
+                        }}
+                        className="px-3 py-1 m-3 outline outline-1 outline-gray-300 font-semibold rounded-md shadow-sm text-sm"
+                      >
+                        View Story
+                      </button>
+                    </div>
                     <div className="mb-6" />
                   </div>
                 </article>
@@ -241,21 +260,47 @@ export default function ExperienceList(props: Props) {
                           </div>
                         ) : null}
                         <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
-                              {exp.company}
-                            </h3>
-                            {exp.role ? (
-                              <p className="text-sm md:text-base text-muted-foreground mt-1">
-                                {exp.role}
+                          <div className="flex items-center gap-4">
+                            <div>
+                              <div className="flex items-center gap-4 mb-2">
+                                {/* Back button next to title in card view (visible when in card mode) */}
+                                {mode === 'card' && (
+                                  <button
+                                    onClick={() => {
+                                      setMode('list');
+                                      const targetIndex = returnToIndex ?? cardIndexValue;
+                                      const id = experiences[targetIndex]?._id;
+                                      requestAnimationFrame(() => {
+                                        const el = document.getElementById(`experience-${id}`);
+                                        if (el)
+                                          el.scrollIntoView({
+                                            behavior: 'smooth',
+                                            block: 'center',
+                                          });
+                                      });
+                                    }}
+                                    className="px-3 py-1 bg-white rounded-md shadow-sm text-sm"
+                                  >
+                                    ← Back
+                                  </button>
+                                )}
+                              </div>
+
+                              <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
+                                {exp.company}
+                              </h3>
+                              {exp.role ? (
+                                <p className="text-sm md:text-base text-muted-foreground mt-1">
+                                  {exp.role}
+                                </p>
+                              ) : null}
+                              <p className="text-xs text-muted-foreground mt-1">
+                                {exp.startDate} — {exp.endDate}
                               </p>
-                            ) : null}
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {exp.startDate} — {exp.endDate}
-                            </p>
+                            </div>
                           </div>
 
-                          {exp.technologies && exp.technologies.length ? (
+                          {/* {exp.technologies && exp.technologies.length ? (
                             <div className="hidden md:flex md:flex-wrap md:gap-2 md:items-start">
                               {exp.technologies.map((t, i) => (
                                 <span
@@ -266,7 +311,7 @@ export default function ExperienceList(props: Props) {
                                 </span>
                               ))}
                             </div>
-                          ) : null}
+                          ) : null} */}
                         </div>
                       </div>
                       {/* show tech chips on small screens below header */}
@@ -318,11 +363,7 @@ export default function ExperienceList(props: Props) {
                   </div>
                   <div className="md:col-span-5 self-start">
                     <div className="sticky top-16 z-20">
-                      <SkillTimeline
-                        timeline={timeline}
-                        activeIndex={cardIndexValue}
-                        onSelectedIndexChange={(i) => goto(i)}
-                      />
+                      <Timeline experiences={[exp]} startAtEnd />
                     </div>
                   </div>
                 </article>

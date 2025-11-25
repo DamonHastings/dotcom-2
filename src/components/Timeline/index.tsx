@@ -4,8 +4,8 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 're
 
 type Experience = {
   company: string;
-  role: string;
-  startDate: string; // ISO YYYY-MM-DD or YYYY-MM
+  role?: string | null;
+  startDate?: string | null; // ISO YYYY-MM-DD or YYYY-MM
   endDate?: string | null; // null or undefined means present
   technologies?: string[];
 };
@@ -14,20 +14,22 @@ type TimelineProps = {
   experiences: Experience[];
   // months per animation step in ms (smaller -> faster)
   stepMs?: number;
+  // if true, position the playhead at the end of the provided timeline on mount
+  startAtEnd?: boolean;
 };
 
-function parseDateToMonthIndex(dateStr: string) {
-  const d = new Date(dateStr);
+function parseDateToMonthIndex(dateStr?: string | null) {
+  const d = dateStr ? new Date(dateStr) : new Date();
   return d.getFullYear() * 12 + d.getMonth();
 }
 
 function monthIndexToDate(monthIndex: number) {
   const year = Math.floor(monthIndex / 12);
   const month = monthIndex % 12;
-  return new Date(year, month - 1, 1);
+  return new Date(year, month, 1);
 }
 
-export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
+export default function Timeline({ experiences, stepMs = 160, startAtEnd = false }: TimelineProps) {
   // Normalize experiences
   const normalized = useMemo(() => {
     return experiences
@@ -72,9 +74,9 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
     }
 
     function tick(now: number) {
-      if (lastTickRef.current == null) lastTickRef.current = now;
-      const elapsed = now - lastTickRef.current;
-      if (elapsed >= stepMs) {
+      if (!lastTickRef.current) lastTickRef.current = now;
+      const delta = now - lastTickRef.current;
+      if (delta >= stepMs) {
         setCurrentMonth((m) => {
           const next = m + 1;
           if (next > maxMonth) {
@@ -94,6 +96,13 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
       rafRef.current = null;
     };
   }, [playing, stepMs, maxMonth]);
+
+  // Optionally move the playhead to the end when requested (e.g. single-experience preview)
+  useEffect(() => {
+    if (startAtEnd) {
+      setCurrentMonth(maxMonth);
+    }
+  }, [startAtEnd, maxMonth]);
 
   // compute cumulative months per skill up to currentMonth
   const skillMonths = useMemo(() => {
@@ -144,13 +153,19 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
   const maxSkillMonths = Math.max(1, ...Object.values(skillTotalMonths));
 
   const sortedSkills = useMemo(() => {
+    const currentSet = new Set<string>((currentRole?.technologies as string[] | undefined) ?? []);
     return skills
       .slice()
-      .sort((a, b) => (skillMonths[b] || 0) - (skillMonths[a] || 0))
-      .filter((s) => (skillMonths[s] || 0) > 0);
+      .filter((s) => (skillMonths[s] || 0) > 0)
+      .sort((a, b) => {
+        const aIsCurrent = currentSet.has(a) ? 0 : 1;
+        const bIsCurrent = currentSet.has(b) ? 0 : 1;
+        if (aIsCurrent !== bIsCurrent) return aIsCurrent - bIsCurrent; // current-role skills first
+        return (skillMonths[b] || 0) - (skillMonths[a] || 0);
+      });
   }, [skills, skillMonths]);
 
-  const TOP_N = 10;
+  const TOP_N = 5;
   const [showAll, setShowAll] = useState(false);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<string>('0px');
@@ -179,14 +194,53 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
 
   return (
     <div className="w-full p-4 bg-white rounded-lg shadow-sm">
-      <div className="mb-3">
+      <div className="mb-3 flex items-start justify-between">
         <div>
-          <h3 className="text-lg font-semibold">
-            {currentRole ? `${currentRole.role} @ ${currentRole.company}` : 'Career Timeline'}
+          <h3 className="text-lg font-semibold leading-tight mb-1">
+            {currentRole ? `${currentRole.role}` : 'Skills over time'}
           </h3>
+          <h4 className="text-md font-semibold">{`${
+            currentRole?.company ? `@ ${currentRole.company}` : ''
+          }`}</h4>
           <div className="text-sm text-gray-500">
             {monthIndexToDate(currentMonth).getFullYear()}
           </div>
+        </div>
+
+        {/* Play/Pause icon button aligned to header's right */}
+        <div>
+          <button
+            aria-pressed={playing}
+            aria-label={playing ? 'Pause timeline' : 'Play timeline'}
+            onClick={() => setPlaying((p) => !p)}
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white border text-white hover:bg-gray-100 focus:outline-none"
+          >
+            {playing ? (
+              // Pause icon
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5"
+                stroke="gray"
+                fill="white"
+                aria-hidden
+              >
+                <rect x="6" y="5" width="4" height="14" rx="1" />
+                <rect x="14" y="5" width="4" height="14" rx="1" />
+              </svg>
+            ) : (
+              // Play icon
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                className="w-5 h-5"
+                stroke="gray"
+                fill="white"
+              >
+                <path d="M5 3v18l15-9L5 3z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
 
@@ -203,17 +257,24 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
               const months = skillMonths[s] || 0;
               const years = Math.round(months / 12); // nearest whole year
               const pctCurrentOfGlobal = (months / maxSkillMonths) * 100;
+              const isCurrent = !!currentRole && (currentRole.technologies || []).includes(s);
+              const barColor = isCurrent ? 'bg-emerald-500' : 'bg-sky-500';
+              const labelClass = isCurrent ? 'text-emerald-700 font-semibold' : 'text-gray-900';
               return (
-                <div key={s} className="transition-all duration-300 mb-3">
-                  <div className="flex justify-between mb-1">
-                    <div className="text-sm font-medium">{s}</div>
-                    <div className="text-sm text-gray-600">{years} yrs</div>
-                  </div>
-                  <div className="relative h-4 bg-gray-200 rounded overflow-hidden">
-                    <div
-                      style={{ width: `${pctCurrentOfGlobal}%` }}
-                      className="absolute left-0 top-0 bottom-0 bg-sky-500 transition-all duration-300"
-                    />
+                <div key={s} className="transition-all duration-300 mb-1">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-40 flex-shrink-0 text-xs ${labelClass}`}>{s}</div>
+
+                    <div className="flex-1">
+                      <div className="relative h-2 bg-gray-200 rounded overflow-hidden">
+                        <div
+                          style={{ width: `${pctCurrentOfGlobal}%` }}
+                          className={`absolute left-0 top-0 bottom-0 ${barColor} transition-all duration-300`}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="w-16 text-right text-sm text-gray-600">{years} yrs</div>
                   </div>
                 </div>
               );
@@ -248,13 +309,6 @@ export default function Timeline({ experiences, stepMs = 160 }: TimelineProps) {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <button
-              aria-label="play-pause"
-              className="px-3 py-1 rounded bg-sky-600 text-white text-sm"
-              onClick={() => setPlaying((p) => !p)}
-            >
-              {playing ? 'Pause' : 'Play'}
-            </button>
             <div className="text-sm text-gray-600">
               {Math.round((currentMonth - minMonth) / 12)} yrs
             </div>
