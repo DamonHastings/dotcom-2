@@ -12,9 +12,18 @@ interface Props {
   timeline: TimelineEntry[];
   /** Start index into sorted timeline (defaults to last item) */
   initialIndex?: number;
+  /** Controlled active index into the sorted timeline (optional) */
+  activeIndex?: number;
+  /** Called when the selected index changes (passes index) */
+  onSelectedIndexChange?: (i: number) => void;
 }
 
-export default function SkillTimeline({ timeline, initialIndex }: Props) {
+export default function SkillTimeline({
+  timeline,
+  initialIndex,
+  activeIndex,
+  onSelectedIndexChange,
+}: Props) {
   const sorted = useMemo(() => [...timeline].sort((a, b) => a.year - b.year), [timeline]);
 
   const allSkills = useMemo(() => {
@@ -31,12 +40,46 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
     typeof initialIndex === 'number' ? sorted[initialIndex]?.year ?? maxYear : maxYear;
   const [year, setYear] = useState<number>(defaultYear);
 
+  // If `activeIndex` is provided (controlled), sync year with it.
+  useEffect(() => {
+    if (typeof activeIndex === 'number') {
+      const idx = Math.max(0, Math.min(sorted.length - 1, activeIndex));
+      const y = sorted[idx]?.year ?? maxYear;
+      setYear(y);
+    }
+  }, [activeIndex, sorted, maxYear]);
+
   useEffect(() => {
     setYear((y) => Math.max(minYear, Math.min(maxYear, y)));
   }, [minYear, maxYear]);
 
-  const goPrev = () => setYear((y) => Math.max(minYear, y - 1));
-  const goNext = () => setYear((y) => Math.min(maxYear, y + 1));
+  function yearToIndex(y: number) {
+    if (sorted.length === 0) return 0;
+    let best = 0;
+    let bestDiff = Math.abs(sorted[0].year - y);
+    for (let i = 1; i < sorted.length; i++) {
+      const d = Math.abs(sorted[i].year - y);
+      if (d < bestDiff) {
+        bestDiff = d;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  const goPrev = () => {
+    const next = Math.max(minYear, year - 1);
+    setYear(next);
+    const idx = yearToIndex(next);
+    if (onSelectedIndexChange) onSelectedIndexChange(idx);
+  };
+
+  const goNext = () => {
+    const next = Math.min(maxYear, year + 1);
+    setYear(next);
+    const idx = yearToIndex(next);
+    if (onSelectedIndexChange) onSelectedIndexChange(idx);
+  };
 
   function handleSliderKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     // Arrow keys move by 1 year, Shift+Arrow moves by 5 years.
@@ -68,6 +111,14 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
     }
 
     if (handled) e.preventDefault();
+  }
+
+  // When the range slider changes, update year and notify parent with the nearest index.
+  function handleSliderChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const v = Number(e.target.value);
+    setYear(v);
+    const idx = yearToIndex(v);
+    if (onSelectedIndexChange) onSelectedIndexChange(idx);
   }
 
   const entryYear = year;
@@ -185,7 +236,7 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
                 max={maxYear}
                 step={0.1}
                 value={year}
-                onChange={(e) => setYear(Number(e.target.value))}
+                onChange={handleSliderChange}
                 onKeyDown={handleSliderKeyDown}
                 className="w-full skill-slider"
                 aria-label="Select year"
