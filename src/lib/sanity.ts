@@ -82,8 +82,8 @@ export type SiteInfo = {
 
 export type LandingPage = {
   heroHeading?: string[] | null;
-  heroTagline?: string | null;
-  summary?: string | null;
+  heroTagline?: any[] | string | null;
+  summary?: any[] | string | null;
   primaryCtas?: { label: string; href: string }[] | null;
   secondaryCtas?: { label: string; href: string }[] | null;
   featuredProjects?:

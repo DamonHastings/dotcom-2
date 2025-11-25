@@ -3,16 +3,22 @@ import { PortableText } from '@portabletext/react';
 import { type Experience } from '@/lib/sanity';
 // Note: moved the "View All" control below the component; no link import needed here
 import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
+import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
 
 interface Props {
   experiences: Experience[];
+  timeline: TimelineEntry[];
+  /** Controlled selected index (optional). If provided, ExperienceList will notify via onSelectedIndexChange. */
+  selectedIndex?: number;
+  onSelectedIndexChange?: (i: number) => void;
 }
 
 type Tab = 'story' | 'highlights';
 
 import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
-export default function ExperienceList({ experiences }: Props) {
+export default function ExperienceList(props: Props) {
+  const { experiences, timeline } = props;
   if (!experiences || experiences.length === 0) return null;
 
   // Global view toggle for all experience items
@@ -20,7 +26,13 @@ export default function ExperienceList({ experiences }: Props) {
 
   // Display mode: 'list' shows all items, 'card' shows one item with prev/next
   const [mode, setMode] = useState<'list' | 'card'>('list');
-  const [cardIndex, setCardIndex] = useState(0);
+  // internal state for card index when uncontrolled
+  const [cardIndex, setCardIndexState] = useState(0);
+  const cardIndexValue = props.selectedIndex ?? cardIndex;
+  const setCardIndex = (i: number) => {
+    if (props.onSelectedIndexChange) props.onSelectedIndexChange(i);
+    setCardIndexState(i);
+  };
 
   const count = experiences.length;
   const goto = (i: number) => setCardIndex(((i % count) + count) % count);
@@ -77,121 +89,32 @@ export default function ExperienceList({ experiences }: Props) {
 
       <div className="bg-transparent">
         {mode === 'list' ? (
-          <div className="space-y-8">
-            {experiences.map((exp) => (
-              <article
-                key={exp._id}
-                className="relative grid gap-6 md:grid-cols-2 md:items-start mb-10"
-              >
-                <div className="pr-6">
-                  <div className="mb-4 relative">
-                    {exp.duration ? (
-                      <div className="absolute top-0 right-0 mr-4">
-                        <div
-                          className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-end"
-                          aria-hidden="true"
-                          style={{ minWidth: 96 }}
-                        >
-                          {/* <span className="text-xs uppercase tracking-wider opacity-90">
-                            Duration
-                          </span> */}
-                          <span className="text-md font-bold leading-tight justify-center">
-                            {exp.duration}
-                          </span>
-                        </div>
-                      </div>
-                    ) : null}
-                    <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
-                      {exp.company}
-                    </h3>
-                    {exp.role ? (
-                      <p className="text-sm md:text-base text-muted-foreground mt-1">{exp.role}</p>
-                    ) : null}
-                    <p className="text-xs text-muted-foreground mt-1">
-                      {exp.startDate} — {exp.endDate}
-                    </p>
-                  </div>
-
-                  {exp.technologies && exp.technologies.length ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {exp.technologies.map((t, i) => (
-                        <span
-                          key={i}
-                          className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                  ) : null}
-                </div>
-                <div>
-                  {/* Render based on selected global tab. */}
-                  {viewTab === 'story' ? (
-                    // Story: render portable text (rich renderer)
-                    exp.story && exp.story.length ? (
-                      <div className="prose max-w-none text-base dark:prose-invert">
-                        <PortableText value={exp.story} components={ptComponents} />
-                      </div>
-                    ) : exp.summary ? (
-                      <p className="text-base leading-relaxed">{exp.summary}</p>
-                    ) : null
-                  ) : (
-                    <div>
-                      {/* Prefer `resume.shortSummary`, fall back to `summary` for a short intro */}
-                      {(exp.resume?.shortSummary || exp.summary) && (
-                        <p className="text-base leading-relaxed mb-2">
-                          {exp.resume?.shortSummary ?? exp.summary}
-                        </p>
-                      )}
-
-                      {/* Prefer `resume.bullets`, fall back to `responsibilities` which editors may have used */}
-                      {(exp.resume?.bullets && exp.resume.bullets.length) ||
-                      (exp.responsibilities && exp.responsibilities.length) ? (
-                        <ul className="mt-3 list-disc list-inside">
-                          {(exp.resume?.bullets && exp.resume.bullets.length
-                            ? exp.resume.bullets
-                            : exp.responsibilities || []
-                          ).map((b, i) => (
-                            <li key={i} className="text-sm mb-3">
-                              {b}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">No highlights available.</p>
-                      )}
-                    </div>
-                  )}
-                  {/* spacer to separate items visually */}
-                  <div className="mb-6" />
-                </div>
-              </article>
-            ))}
-          </div>
-        ) : (
-          // Card mode: show single experience with prev/next
-          <div className="relative">
-            {(() => {
-              const exp = experiences[cardIndex];
-              return (
+          <div className="grid grid-cols-12 gap-8">
+            <div className="col-span-8">
+              {experiences.map((exp, idx) => (
                 <article
                   key={exp._id}
-                  className="relative grid gap-6 md:grid-cols-2 md:items-start bg-white py-6 rounded-lg"
+                  className="relative grid gap-6 md:grid-cols-12 md:items-start mb-10 col-span-8"
+                  onClick={() => {
+                    // update internal card index and notify parent if provided
+                    setCardIndex(idx);
+                  }}
                 >
-                  <div className="pr-6">
+                  <div className="col-span-5">
                     <div className="mb-4 relative">
                       {exp.duration ? (
-                        <div className="absolute top-0 right-0 mt-4 mr-4">
+                        <div className="absolute top-0 right-0 mr-4">
                           <div
-                            className="bg-emerald-100 rounded-lg px-4 py-3 shadow-md text-right flex flex-col items-end"
+                            className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-end"
                             aria-hidden="true"
                             style={{ minWidth: 96 }}
                           >
-                            <span className="text-xs uppercase tracking-wider opacity-90">
-                              Duration
+                            {/* <span className="text-xs uppercase tracking-wider opacity-90">
+                            Duration
+                          </span> */}
+                            <span className="text-md font-bold leading-tight justify-center">
+                              {exp.duration}
                             </span>
-                            <span className="text-lg font-bold leading-tight">{exp.duration}</span>
                           </div>
                         </div>
                       ) : null}
@@ -221,7 +144,115 @@ export default function ExperienceList({ experiences }: Props) {
                       </div>
                     ) : null}
                   </div>
-                  <div>
+                  <div className="col-span-7">
+                    {/* Render based on selected global tab. */}
+                    {viewTab === 'story' ? (
+                      // Story: render portable text (rich renderer)
+                      exp.story && exp.story.length ? (
+                        <div className="prose max-w-none text-base dark:prose-invert">
+                          <PortableText value={exp.story} components={ptComponents} />
+                        </div>
+                      ) : exp.summary ? (
+                        <p className="text-base leading-relaxed">{exp.summary}</p>
+                      ) : null
+                    ) : (
+                      <div>
+                        {/* Prefer `resume.shortSummary`, fall back to `summary` for a short intro */}
+                        {(exp.resume?.shortSummary || exp.summary) && (
+                          <p className="text-base leading-relaxed mb-2">
+                            {exp.resume?.shortSummary ?? exp.summary}
+                          </p>
+                        )}
+
+                        {/* Prefer `resume.bullets`, fall back to `responsibilities` which editors may have used */}
+                        {(exp.resume?.bullets && exp.resume.bullets.length) ||
+                        (exp.responsibilities && exp.responsibilities.length) ? (
+                          <ul className="mt-3 list-disc list-inside">
+                            {(exp.resume?.bullets && exp.resume.bullets.length
+                              ? exp.resume.bullets
+                              : exp.responsibilities || []
+                            ).map((b, i) => (
+                              <li key={i} className="text-sm mb-3">
+                                {b}
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-muted-foreground">No highlights available.</p>
+                        )}
+                      </div>
+                    )}
+                    {/* spacer to separate items visually */}
+                    <div className="mb-6" />
+                  </div>
+                </article>
+              ))}
+            </div>
+            <div className="col-span-4 self-start">
+              <div className="sticky top-16 z-20">
+                <SkillTimeline
+                  timeline={timeline}
+                  activeIndex={cardIndexValue}
+                  onSelectedIndexChange={(i) => goto(i)}
+                />
+              </div>
+            </div>
+          </div>
+        ) : (
+          // Card mode: show single experience with prev/next
+          <div className="relative">
+            {(() => {
+              const exp = experiences[cardIndexValue];
+              return (
+                <article
+                  key={exp._id}
+                  className="relative grid gap-6 md:grid-cols-12 md:items-start bg-white py-6 rounded-lg"
+                >
+                  <div className="md:col-span-7">
+                    <div className="pr-6">
+                      <div className="mb-4 relative">
+                        {exp.duration ? (
+                          <div className="absolute top-0 right-0 mt-4 mr-4">
+                            <div
+                              className="bg-emerald-100 rounded-lg px-4 py-3 shadow-md text-right flex flex-col items-end"
+                              aria-hidden="true"
+                              style={{ minWidth: 96 }}
+                            >
+                              <span className="text-xs uppercase tracking-wider opacity-90">
+                                Duration
+                              </span>
+                              <span className="text-lg font-bold leading-tight">
+                                {exp.duration}
+                              </span>
+                            </div>
+                          </div>
+                        ) : null}
+                        <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
+                          {exp.company}
+                        </h3>
+                        {exp.role ? (
+                          <p className="text-sm md:text-base text-muted-foreground mt-1">
+                            {exp.role}
+                          </p>
+                        ) : null}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {exp.startDate} — {exp.endDate}
+                        </p>
+                      </div>
+
+                      {exp.technologies && exp.technologies.length ? (
+                        <div className="mt-3 mb-6 flex flex-wrap gap-2">
+                          {exp.technologies.map((t, i) => (
+                            <span
+                              key={i}
+                              className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
+                            >
+                              {t}
+                            </span>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
                     {viewTab === 'story' ? (
                       exp.story && exp.story.length ? (
                         <div className="prose max-w-none text-base dark:prose-invert">
@@ -255,29 +286,50 @@ export default function ExperienceList({ experiences }: Props) {
                       </div>
                     )}
                   </div>
+                  <div className="md:col-span-5 self-start">
+                    <div className="sticky top-16 z-20">
+                      <SkillTimeline
+                        timeline={timeline}
+                        activeIndex={cardIndexValue}
+                        onSelectedIndexChange={(i) => goto(i)}
+                      />
+                    </div>
+                  </div>
                 </article>
               );
             })()}
             <div className="flex items-center justify-between mb-4">
               <div className="text-sm text-muted-foreground">
-                {cardIndex + 1} / {count}
+                {cardIndexValue + 1} / {count}
               </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => goto(cardIndex - 1)}
-                  aria-label="Previous experience"
-                  className="px-3 py-1 bg-white rounded-md shadow-sm"
-                >
-                  ‹
-                </button>
-                <button
-                  onClick={() => goto(cardIndex + 1)}
-                  aria-label="Next experience"
-                  className="px-3 py-1 bg-white rounded-md shadow-sm"
-                >
-                  ›
-                </button>
-              </div>
+              {(() => {
+                const prevIndex = (((cardIndexValue - 1) % count) + count) % count;
+                const nextIndex = (((cardIndexValue + 1) % count) + count) % count;
+                const prevExp = experiences[prevIndex];
+                const nextExp = experiences[nextIndex];
+                return (
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => goto(cardIndexValue - 1)}
+                      aria-label={`Previous experience: ${prevExp?.company ?? ''} — ${
+                        prevExp?.role ?? ''
+                      }`}
+                      className="px-3 py-1 bg-white rounded-md shadow-sm"
+                    >
+                      ‹ {prevExp?.company} {prevExp?.role ? `— ${prevExp.role}` : ''}
+                    </button>
+                    <button
+                      onClick={() => goto(cardIndexValue + 1)}
+                      aria-label={`Next experience: ${nextExp?.company ?? ''} — ${
+                        nextExp?.role ?? ''
+                      }`}
+                      className="px-3 py-1 bg-white rounded-md shadow-sm"
+                    >
+                      {nextExp?.company} {nextExp?.role ? `— ${nextExp.role}` : ''} ›
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}

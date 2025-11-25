@@ -38,6 +38,38 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
   const goPrev = () => setYear((y) => Math.max(minYear, y - 1));
   const goNext = () => setYear((y) => Math.min(maxYear, y + 1));
 
+  function handleSliderKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    // Arrow keys move by 1 year, Shift+Arrow moves by 5 years.
+    // PageUp/PageDown move by 5 years (Shift for 10).
+    // Home/End jump to min/max.
+    let handled = false;
+    if (e.key === 'Home') {
+      setYear(minYear);
+      handled = true;
+    } else if (e.key === 'End') {
+      setYear(maxYear);
+      handled = true;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const step = e.shiftKey ? 5 : 1;
+      const delta = e.key === 'ArrowRight' ? step : -step;
+      setYear((y) => {
+        const next = Math.round((y + delta) * 10) / 10;
+        return Math.max(minYear, Math.min(maxYear, next));
+      });
+      handled = true;
+    } else if (e.key === 'PageUp' || e.key === 'PageDown') {
+      const step = e.shiftKey ? 10 : 5;
+      const delta = e.key === 'PageUp' ? step : -step;
+      setYear((y) => {
+        const next = Math.round((y + delta) * 10) / 10;
+        return Math.max(minYear, Math.min(maxYear, next));
+      });
+      handled = true;
+    }
+
+    if (handled) e.preventDefault();
+  }
+
   const entryYear = year;
 
   function getLevelAt(skill: string, y: number) {
@@ -76,11 +108,12 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
   })();
 
   return (
-    <section className="max-w-5xl mx-auto p-4">
-      <div className="grid grid-cols-12 gap-6 items-start">
+    <section>
+      <div className="grid grid-cols-12 gap-6 items-start border border-gray-100 p-8">
+        <h2 className="col-span-12 text-center font-semibold text-lg">My Journey</h2>
         <div className="col-span-12 text-center">
           <div className="mb-4">
-            <h3 className="text-lg font-semibold">
+            <h3 className="text-md font-semibold">
               {' '}
               <button
                 onClick={goPrev}
@@ -153,6 +186,7 @@ export default function SkillTimeline({ timeline, initialIndex }: Props) {
                 step={0.1}
                 value={year}
                 onChange={(e) => setYear(Number(e.target.value))}
+                onKeyDown={handleSliderKeyDown}
                 className="w-full skill-slider"
                 aria-label="Select year"
               />

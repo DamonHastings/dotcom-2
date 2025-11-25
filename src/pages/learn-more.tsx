@@ -14,9 +14,12 @@ type Props = {
 };
 
 const LearnMore = ({ imageSrc, imageAlt, content, title, hero, sections }: Props) => {
+  // Debug: log server-side fetch result (kept outside JSX)
+  // eslint-disable-next-line no-console
+  console.log('LearnMore page content:', content);
+
   return (
     <main>
-      {console.log('LearnMore page content:', content)}
       <LearnMorePage
         title={title ?? undefined}
         imageSrc={imageSrc}

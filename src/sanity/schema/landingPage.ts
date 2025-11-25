@@ -25,12 +25,16 @@ export default defineType({
     defineField({
       name: 'heroTagline',
       title: 'Hero Tagline',
-      type: 'string',
+      description: 'Rich text tagline for the hero area',
+      type: 'array',
+      of: [{ type: 'block' }],
     }),
     defineField({
       name: 'summary',
       title: 'Intro Summary',
-      type: 'text',
+      description: 'Rich intro summary (Portable Text)',
+      type: 'array',
+      of: [{ type: 'block' }],
     }),
     defineField({
       name: 'primaryCtas',

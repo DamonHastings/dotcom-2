@@ -102,7 +102,7 @@ const Header: React.FC<{ site?: SiteInfo | null }> = ({ site }) => (
         ) : null}
       </div>
       <div className="flex items-center">
-        <nav className="mr-4 text-sm">
+        {/* <nav className="mr-4 text-sm">
           <Link href="/projects" className="mr-4 hover:underline">
             Projects
           </Link>
@@ -115,9 +115,12 @@ const Header: React.FC<{ site?: SiteInfo | null }> = ({ site }) => (
           <Link href="/contact" className="hover:underline">
             Contact
           </Link>
-        </nav>
+        </nav> */}
         <ThemeToggle />
       </div>
+    </div>
+    <div className="max-w-6xl mx-auto md:gap-20 flex items-center justify-between">
+      Engineer · Producer · Builder
     </div>
   </header>
 );

@@ -6,6 +6,7 @@ import CategoryTabs from '@/components/CategoryTabs';
 import ProjectCarousel from '@/components/ProjectCarousel';
 import ExperienceList from '@/components/ExperienceList';
 import CareerHighlights from '@/components/CareerHighlights';
+import CurrentGoals from '@/components/CurrentGoals';
 import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
 import {
   fetchProjects,
@@ -73,6 +74,19 @@ export async function getStaticProps() {
 
 export default function Home({ projects, site, landing, experiences }: HomeProps) {
   console.log('Hero Heading:', landing?.heroHeading);
+  const ptToPlain = (val: any) => {
+    if (!val) return '';
+    if (!Array.isArray(val)) return String(val);
+    return val
+      .map((block: any) =>
+        (block?.children || [])
+          .map((c: any) => c?.text ?? '')
+          .filter(Boolean)
+          .join(' ')
+      )
+      .filter(Boolean)
+      .join('\n\n');
+  };
   const heroLines = landing?.heroHeading?.length
     ? landing.heroHeading
     : site?.title
@@ -81,7 +95,7 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
 
   const headingTagline = landing?.heroTagline || site?.subtitle || 'Product & Design at Panta';
   const introSummary =
-    landing?.summary ||
+    (Array.isArray(landing?.summary) ? ptToPlain(landing?.summary) : landing?.summary) ||
     site?.summary ||
     'A collection of work exploring interface design, interaction patterns, brand development, and the systems that support rapid experimentation.';
   const primaryCtas = landing?.primaryCtas?.length
@@ -125,46 +139,48 @@ export default function Home({ projects, site, landing, experiences }: HomeProps
           name="description"
           content={
             landing?.seoDescription ||
-            landing?.summary ||
+            (Array.isArray(landing?.summary) ? ptToPlain(landing.summary) : landing?.summary) ||
             site?.summary ||
             'Panta portfolio showcasing interface design, interaction patterns, brand development, and experimentation systems.'
           }
         />
       </Head>
       <main className="px-6">
-        <section className="relative max-w-6xl mx-auto grid grid-cols-12 gap-6 md:gap-12 mt-0 mb-0 md:mb-5 md:mt-5">
+        <section className="relative flex max-w-6xl grid grid-cols-12 gap-6 md:gap-12 mt-0 mb-0 md:mb-5 md:mt-5 mx-auto">
           {/* Hero - 12 column grid: left 8 cols (visual + heading), right 4 cols (lead + ctas) */}
 
-          <div className="col-span-12 md:col-span-8 relative">
+          <div className="flex justify-start items-start col-span-12 md:col-span-6 relative">
             {/* Decorative background image positioned bottom-left for md+ */}
-            {/* {heroImageUrl && (
-              <div className="pointer-events-none md:absolute md:bottom-0 md:left-0">
+            {heroImageUrl && (
+              <div className="pointer-events-none md:bottom-0 md:mx-auto top-10 md:top-5 my-auto">
                 <img
                   src={heroImageUrl}
                   alt=""
                   aria-hidden="true"
-                  className="w-full md:w-[610px] opacity-90 rounded"
+                  className="w-full md:w-[100%] opacity-90 rounded"
                 />
                 <div className="sr-only">{heroImageAlt}</div>
               </div>
-            )} */}
+            )}
 
             {/* Heading overlay — use relative positioning on small screens and absolute on md */}
-            <div className="relative md:absolute md:bottom-4 md:left-6 bg-transparent md:bg-white md:p-5 md:pl-8">
+            {/* <div className="relative md:absolute md:bottom-0 md:right-0 bg-transparent md:bg-white md:p-5 md:px-8 md:pl-6">
               <HeroHeading lines={heroLines} />
-            </div>
+            </div> */}
           </div>
 
           <div className="col-span-12 md:col-span-4 space-y-8 z-10 mb-10">
             <LeadText heading={headingTagline}>{introSummary}</LeadText>
             <CTAList primary={primaryCtas} secondary={secondaryCtas} />
           </div>
+          <div className="hidden md:block md:col-span-2">{/* Spacer for layout balance */}</div>
         </section>
 
         <CareerHighlights />
-        <SkillTimeline timeline={timeline} />
+        <CurrentGoals timeline={timeline} />
+        {/* <SkillTimeline timeline={timeline} /> */}
 
-        <ExperienceList experiences={experiences} />
+        <ExperienceList experiences={experiences} timeline={timeline} />
 
         {/* <section className="max-w-6xl mx-auto mb-12">
           <h2 className="text-2xl font-bold mb-2">Things I've Done</h2>

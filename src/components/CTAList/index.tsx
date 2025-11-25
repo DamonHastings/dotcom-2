@@ -24,8 +24,8 @@ export function CTAList({ primary, secondary, className = '', divider = true }: 
       {secondary && divider && <hr className="border-gray-300 dark:border-gray-600" />} */}
       {secondary && (
         <div className="space-y-1">
-          {secondary.map((item) => (
-            <ArrowLink key={item.href} href={item.href}>
+          {secondary.map((item, i) => (
+            <ArrowLink key={`${item.href}-${i}`} href={item.href}>
               {item.label}
             </ArrowLink>
           ))}
