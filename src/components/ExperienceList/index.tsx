@@ -4,6 +4,7 @@ import { type Experience } from '@/lib/sanity';
 // Note: moved the "View All" control below the component; no link import needed here
 import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
 import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
+import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
 interface Props {
   experiences: Experience[];
@@ -14,8 +15,6 @@ interface Props {
 }
 
 type Tab = 'story' | 'highlights';
-
-import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
 export default function ExperienceList(props: Props) {
   const { experiences, timeline } = props;
@@ -89,7 +88,7 @@ export default function ExperienceList(props: Props) {
 
       <div className="bg-transparent">
         {mode === 'list' ? (
-          <div className="grid grid-cols-12 gap-8">
+          <div className="grid grid-cols-12 gap-12">
             <div className="col-span-8">
               {experiences.map((exp, idx) => (
                 <article
@@ -100,8 +99,8 @@ export default function ExperienceList(props: Props) {
                     setCardIndex(idx);
                   }}
                 >
-                  <div className="col-span-5">
-                    <div className="mb-4 relative">
+                  <div className="col-span-12 md:col-span-12">
+                    <div className="relative">
                       {exp.duration ? (
                         <div className="absolute top-0 right-0 mr-4">
                           <div
@@ -109,30 +108,48 @@ export default function ExperienceList(props: Props) {
                             aria-hidden="true"
                             style={{ minWidth: 96 }}
                           >
-                            {/* <span className="text-xs uppercase tracking-wider opacity-90">
-                            Duration
-                          </span> */}
                             <span className="text-md font-bold leading-tight justify-center">
                               {exp.duration}
                             </span>
                           </div>
                         </div>
                       ) : null}
-                      <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
-                        {exp.company}
-                      </h3>
-                      {exp.role ? (
-                        <p className="text-sm md:text-base text-muted-foreground mt-1">
-                          {exp.role}
-                        </p>
-                      ) : null}
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {exp.startDate} — {exp.endDate}
-                      </p>
-                    </div>
 
+                      <div className="mb-3">
+                        <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
+                          {exp.company}
+                        </h3>
+                        {exp.role ? (
+                          <p className="text-sm md:text-base text-muted-foreground mt-1">
+                            {exp.role}
+                          </p>
+                        ) : null}
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {exp.startDate} — {exp.endDate}
+                        </p>
+                      </div>
+
+                      <div className="flex items-start justify-between gap-4">
+                        {exp.technologies && exp.technologies.length ? (
+                          <div className="hidden md:flex md:flex-wrap md:gap-2 md:items-start">
+                            {exp.technologies.map((t, i) => (
+                              <span
+                                key={i}
+                                className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
+                              >
+                                {t}
+                              </span>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="col-span-12">
+                    {/* show tech chips on small screens below header */}
                     {exp.technologies && exp.technologies.length ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
+                      <div className="mt-3 flex flex-wrap gap-2 md:hidden">
                         {exp.technologies.map((t, i) => (
                           <span
                             key={i}
@@ -143,8 +160,7 @@ export default function ExperienceList(props: Props) {
                         ))}
                       </div>
                     ) : null}
-                  </div>
-                  <div className="col-span-7">
+
                     {/* Render based on selected global tab. */}
                     {viewTab === 'story' ? (
                       // Story: render portable text (rich renderer)
@@ -206,7 +222,7 @@ export default function ExperienceList(props: Props) {
               return (
                 <article
                   key={exp._id}
-                  className="relative grid gap-6 md:grid-cols-12 md:items-start bg-white py-6 rounded-lg"
+                  className="relative grid md:grid-cols-12 md:items-start bg-white py-6 rounded-lg"
                 >
                   <div className="md:col-span-7">
                     <div className="pr-6">
@@ -227,21 +243,38 @@ export default function ExperienceList(props: Props) {
                             </div>
                           </div>
                         ) : null}
-                        <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
-                          {exp.company}
-                        </h3>
-                        {exp.role ? (
-                          <p className="text-sm md:text-base text-muted-foreground mt-1">
-                            {exp.role}
-                          </p>
-                        ) : null}
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {exp.startDate} — {exp.endDate}
-                        </p>
-                      </div>
+                        <div className="flex items-start justify-between gap-4">
+                          <div>
+                            <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
+                              {exp.company}
+                            </h3>
+                            {exp.role ? (
+                              <p className="text-sm md:text-base text-muted-foreground mt-1">
+                                {exp.role}
+                              </p>
+                            ) : null}
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {exp.startDate} — {exp.endDate}
+                            </p>
+                          </div>
 
+                          {exp.technologies && exp.technologies.length ? (
+                            <div className="hidden md:flex md:flex-wrap md:gap-2 md:items-start">
+                              {exp.technologies.map((t, i) => (
+                                <span
+                                  key={i}
+                                  className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
+                                >
+                                  {t}
+                                </span>
+                              ))}
+                            </div>
+                          ) : null}
+                        </div>
+                      </div>
+                      {/* show tech chips on small screens below header */}
                       {exp.technologies && exp.technologies.length ? (
-                        <div className="mt-3 mb-6 flex flex-wrap gap-2">
+                        <div className="mt-3 mb-6 flex flex-wrap gap-2 md:hidden">
                           {exp.technologies.map((t, i) => (
                             <span
                               key={i}
