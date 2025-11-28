@@ -4,7 +4,10 @@ import ThemeToggle from '../ThemeToggle';
 import { fetchSiteInfo, type SiteInfo } from '@/lib/sanity';
 
 const Header: React.FC<{ site?: SiteInfo | null }> = ({ site }) => (
-  <header className="px-6 py-4 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
+  <header
+    className="px-6 py-4 bg-black backdrop-blur supports-[backdrop-filter]:bg-background-black sticky top-0 z-30 text-white"
+    style={{ fontFamily: 'var(--font-fraunces, system-ui, -apple-system, Roboto, Arial)' }}
+  >
     <div className="max-w-6xl mx-auto md:gap-20 flex items-center justify-between">
       <div className="flex items-center space-x-4">
         <Link href="/" className="font-bold text-3xl">
@@ -116,11 +119,17 @@ const Header: React.FC<{ site?: SiteInfo | null }> = ({ site }) => (
             Contact
           </Link>
         </nav> */}
-        <ThemeToggle />
+        {/* <ThemeToggle /> */}
+        <Link
+          href="/work-history"
+          className="text-cyan-400 hover:text-cyan-300 hover:text-decoration-line text-2xl"
+        >
+          View My Resume
+        </Link>
       </div>
     </div>
-    <div className="max-w-6xl mx-auto md:gap-20 flex items-center justify-between">
-      Engineer · Producer · Builder
+    <div className="max-w-6xl text-2xl mx-auto md:gap-20 mt-2 flex items-center justify-between">
+      Software Engineer & Media Designer.
     </div>
   </header>
 );

@@ -7,6 +7,18 @@
   --color-text: #e6eef8;
 }
 
+/* Design tokens: color palette */
+:root {
+  --color-primary: #0f172a; /* dark navy */
+  --color-secondary: #0ea5ff; /* sky */
+  --color-accent: #fb923c; /* orange */
+  --color-muted: #64748b; /* slate muted */
+  --color-surface: #ffffff; /* light surface */
+  --color-inverse-surface: #0b1220; /* dark surface */
+  --color-text-default: #0f172a;
+  --color-text-inverse: #e6eef8;
+}
+
 html,
 body,
 #__next {
@@ -23,3 +35,37 @@ html.dark body {
 }
 
 /* light/dark tokens and utility helpers can go here */
+
+/* Typography utility classes (consistent across site) */
+.\@layer components {
+  /* Apply typography to semantic heading elements and the .type-* helper classes
+     so any <h1>/<h2>/<h3> (including Portable Text output) will receive the
+     centralized typography styles. */
+  h1,
+  .type-h1 {
+    @apply font-extrabold tracking-tight leading-tight text-3xl md:text-5xl;
+  }
+
+  h2,
+  .type-h2 {
+    @apply font-bold tracking-tight leading-snug text-xl md:text-2xl;
+  }
+
+  h3,
+  .type-h3 {
+    @apply font-semibold leading-snug text-base;
+  }
+
+  p,
+  .type-body {
+    @apply text-base leading-relaxed text-slate-900 dark:text-slate-100 mb-3 last:mb-0;
+  }
+
+  .type-lead {
+    @apply font-medium text-base leading-relaxed text-slate-600;
+  }
+
+  .type-small {
+    @apply text-sm leading-tight text-slate-500;
+  }
+}

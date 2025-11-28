@@ -26,9 +26,7 @@ export function LeadText({
       // render any block as a heading element
       block: ({ children: blockChildren }: any) => (
         // Using the HeadingTag ensures correct semantics when the content is a single block
-        <HeadingTag className="text-l md:text-xl font-semibold leading-snug">
-          {blockChildren}
-        </HeadingTag>
+        <HeadingTag className="type-h2">{blockChildren}</HeadingTag>
       ),
     },
   };
@@ -40,9 +38,7 @@ export function LeadText({
           {isHeadingPortable ? (
             <PortableText value={heading} components={headingComponents} />
           ) : (
-            <HeadingTag className="text-l md:text-xl font-semibold leading-snug">
-              {heading}
-            </HeadingTag>
+            <HeadingTag className="type-h2">{heading}</HeadingTag>
           )}
 
           {/* speech bubble tail pointing right */}
@@ -56,7 +52,7 @@ export function LeadText({
       {isBodyPortable ? (
         <PortableText value={children as any} components={ptComponents} />
       ) : (
-        children && <p className="text-md md:text-md leading-snug">{children}</p>
+        children && <p className="type-body">{children}</p>
       )}
     </div>
   );

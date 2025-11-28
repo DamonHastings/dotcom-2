@@ -2,15 +2,27 @@ import React from 'react';
 
 // Shared Portable Text components used across the app
 export const blockRenderer = ({ children, value }: any) => {
+  // Portable Text block renderer: respect block style (e.g., 'h1','h2','h3','normal')
+  const style = (value && value.style) || 'normal';
   const hasChildren = React.Children.count(children) > 0;
-  if (hasChildren) return <p className="text-base leading-relaxed mb-3 last:mb-0">{children}</p>;
 
-  const rawText = (value?.children || [])
-    .map((c: any) => c?.text ?? '')
-    .filter(Boolean)
-    .join(' ');
+  const content = hasChildren
+    ? children
+    : (value?.children || [])
+        .map((c: any) => c?.text ?? '')
+        .filter(Boolean)
+        .join(' ');
 
-  return <p className="text-base leading-relaxed mb-3 last:mb-0">{rawText}</p>;
+  switch (style) {
+    case 'h1':
+      return <h1 className="type-h1 mb-3 last:mb-0">{content}</h1>;
+    case 'h2':
+      return <h2 className="type-h2 mb-3 last:mb-0">{content}</h2>;
+    case 'h3':
+      return <h3 className="type-h3 mb-3 last:mb-0">{content}</h3>;
+    default:
+      return <p className="type-body mb-3 last:mb-0">{content}</p>;
+  }
 };
 
 export const ptComponents = {

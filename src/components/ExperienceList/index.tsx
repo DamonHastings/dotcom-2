@@ -5,6 +5,8 @@ import { type Experience } from '@/lib/sanity';
 import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
 import type { TimelineEntry } from '@/components/SkillTimeline';
 import Timeline from '@/components/Timeline';
+import { FullTimeRoleExperience } from '@/components/ContactExperience';
+import type { SchedulePayload } from '@/components/ContactExperience';
 import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
 interface Props {
@@ -18,7 +20,7 @@ interface Props {
 type Tab = 'story' | 'highlights';
 
 export default function ExperienceList(props: Props) {
-  const { experiences, timeline } = props;
+  const { experiences } = props;
   if (!experiences || experiences.length === 0) return null;
 
   // Global view toggle for all experience items
@@ -39,12 +41,25 @@ export default function ExperienceList(props: Props) {
   // track which index to return to when leaving story/card view so we can scroll back
   const [returnToIndex, setReturnToIndex] = useState<number | null>(null);
 
+  const handleMessage = () => {
+    // Navigate to a contact page or open a messaging UI. Replace as needed.
+    if (typeof window !== 'undefined') window.location.href = '/contact';
+  };
+
+  const handleSchedule = (payload: SchedulePayload) => {
+    // Placeholder booking handler — replace with API call to /api/book or your scheduling provider
+    // eslint-disable-next-line no-console
+    console.log('Schedule requested', payload);
+    // eslint-disable-next-line no-alert
+    alert(`Requested schedule: ${new Date(payload.slot).toLocaleString()} — ${payload.purpose}`);
+  };
+
   return (
     <section className="max-w-6xl mx-auto mb-12">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold flex items-center gap-3">
           <span>Experience</span>
-          <div className="inline-flex items-center gap-2">
+          {/* <div className="inline-flex items-center gap-2">
             <button
               onClick={() => setMode('list')}
               aria-pressed={mode === 'list'}
@@ -63,11 +78,11 @@ export default function ExperienceList(props: Props) {
               <IconCodeBracketSquare className="w-5 h-5" />
               <span className="sr-only">Show card view</span>
             </button>
-          </div>
+          </div> */}
         </h2>
 
         <div className="flex items-center gap-2">
-          <div className="text-sm font-medium">View:</div>
+          {/* <div className="text-sm font-medium">View:</div>
           <div className="flex rounded-md overflow-hidden">
             <button
               onClick={() => setViewTab('story')}
@@ -85,7 +100,7 @@ export default function ExperienceList(props: Props) {
             >
               Highlights
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -226,7 +241,22 @@ export default function ExperienceList(props: Props) {
             </div>
             <div className="col-span-4 self-start">
               <div className="sticky top-16 z-20">
-                <Timeline experiences={experiences} />
+                <Timeline
+                  experiences={experiences.map((e) => ({
+                    ...e,
+                    technologies: e.technologies ?? undefined,
+                  }))}
+                  startAtEnd
+                  topN={10}
+                />
+
+                <div className="mt-6">
+                  <FullTimeRoleExperience
+                    resumeUrl="/resume.pdf"
+                    onMessage={handleMessage}
+                    onSchedule={handleSchedule}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -363,7 +393,10 @@ export default function ExperienceList(props: Props) {
                   </div>
                   <div className="md:col-span-5 self-start">
                     <div className="sticky top-16 z-20">
-                      <Timeline experiences={[exp]} startAtEnd />
+                      <Timeline
+                        experiences={[{ ...exp, technologies: exp.technologies ?? undefined }]}
+                        startAtEnd
+                      />
                     </div>
                   </div>
                 </article>

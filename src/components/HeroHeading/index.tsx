@@ -9,9 +9,7 @@ export type HeroHeadingProps = {
 
 export function HeroHeading({ lines, className = '', as: Tag = 'h1' }: HeroHeadingProps) {
   return (
-    <Tag
-      className={`font-bold tracking-tight text-2xl md:text-2xl leading-tight space-y-2 ${className}`}
-    >
+    <Tag className={`type-h1 space-y-2 ${className}`}>
       {lines.map((l, i) => (
         <span key={i} className="block">
           {l}

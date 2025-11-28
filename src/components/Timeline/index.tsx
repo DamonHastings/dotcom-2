@@ -16,6 +16,8 @@ type TimelineProps = {
   stepMs?: number;
   // if true, position the playhead at the end of the provided timeline on mount
   startAtEnd?: boolean;
+  // number of top skills to show when collapsed
+  topN?: number;
 };
 
 function parseDateToMonthIndex(dateStr?: string | null) {
@@ -29,7 +31,12 @@ function monthIndexToDate(monthIndex: number) {
   return new Date(year, month, 1);
 }
 
-export default function Timeline({ experiences, stepMs = 160, startAtEnd = false }: TimelineProps) {
+export default function Timeline({
+  experiences,
+  stepMs = 160,
+  startAtEnd = false,
+  topN = 5,
+}: TimelineProps) {
   // Normalize experiences
   const normalized = useMemo(() => {
     return experiences
@@ -165,7 +172,6 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
       });
   }, [skills, skillMonths]);
 
-  const TOP_N = 5;
   const [showAll, setShowAll] = useState(false);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
   const [maxHeight, setMaxHeight] = useState<string>('0px');
@@ -185,7 +191,7 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
     // When collapsed, compute height of first TOP_N children
     const children = Array.from(el.children) as HTMLElement[];
     let h = 0;
-    for (let i = 0; i < Math.min(children.length, TOP_N); i++) {
+    for (let i = 0; i < Math.min(children.length, topN); i++) {
       h += children[i].offsetHeight;
     }
     // Ensure small non-zero height when nothing present
@@ -193,7 +199,7 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
   }, [showAll, currentMonth, sortedSkills]);
 
   return (
-    <div className="w-full p-4 bg-white rounded-lg shadow-sm">
+    <div className="w-full py-4 bg-white rounded-lg shadow-sm">
       <div className="mb-3 flex items-start justify-between">
         <div>
           <h3 className="text-lg font-semibold leading-tight mb-1">
@@ -212,7 +218,12 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
           <button
             aria-pressed={playing}
             aria-label={playing ? 'Pause timeline' : 'Play timeline'}
-            onClick={() => setPlaying((p) => !p)}
+            onClick={() => {
+              if (currentMonth >= maxMonth) {
+                setCurrentMonth(minMonth);
+              }
+              setPlaying((p) => !p);
+            }}
             className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white border text-white hover:bg-gray-100 focus:outline-none"
           >
             {playing ? (
@@ -253,7 +264,7 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
           style={{ maxHeight, overflow: 'hidden', transition: 'max-height 320ms ease' }}
         >
           <div>
-            {(showAll ? sortedSkills : sortedSkills.slice(0, TOP_N)).map((s) => {
+            {(showAll ? sortedSkills : sortedSkills.slice(0, topN)).map((s) => {
               const months = skillMonths[s] || 0;
               const years = Math.round(months / 12); // nearest whole year
               const pctCurrentOfGlobal = (months / maxSkillMonths) * 100;
@@ -284,13 +295,13 @@ export default function Timeline({ experiences, stepMs = 160, startAtEnd = false
       </div>
       {/* Expand/collapse toggle */}
       <div>
-        {sortedSkills.length > TOP_N && (
+        {sortedSkills.length > topN && (
           <div className="mt-2 text-right">
             <button
               className="text-sm text-sky-600 hover:underline"
               onClick={() => setShowAll((v) => !v)}
             >
-              {showAll ? 'Show top ' + TOP_N : `Show all (${sortedSkills.length})`}
+              {showAll ? 'Show top ' + topN : `Show all (${sortedSkills.length})`}
             </button>
           </div>
         )}

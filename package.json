@@ -24,8 +24,10 @@
   },
   "dependencies": {
     "@portabletext/react": "^2.0.0",
+    "@sanity/block-content-to-hyperscript": "^3.0.1",
     "@sanity/client": "^7.13.0",
     "@sanity/image-url": "^1.2.0",
+    "@sanity/portable-text-editor": "^3.48.1",
     "@sendgrid/mail": "^8.0.0",
     "@vercel/kv": "^3.0.0",
     "dotenv": "^17.2.3",
