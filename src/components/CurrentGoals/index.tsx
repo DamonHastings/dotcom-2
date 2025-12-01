@@ -24,7 +24,7 @@ const CurrentGoals: React.FC = () => {
 
   return (
     <section className="max-w-6xl mx-auto mb-8 grid gap-4 grid-cols-12 bg-white p-6">
-      <div className=" p-6 bg-card col-span-8">
+      <div className=" p-6 bg-card col-span-12 md:col-span-8">
         <h3 className="text-2xl font-semibold mb-2">
           Open to full-time roles, fractional engineering leadership, and mission-driven
           collaborations.
@@ -34,24 +34,9 @@ const CurrentGoals: React.FC = () => {
           ship closely together. Open to senior engineering or product roles, contract work, and
           collaborative projects that explore fast experimentation and delightful UX.
         </p>
-
-        <div className="flex items-center space-x-3">
-          <Link
-            href="/contact"
-            className="inline-block rounded bg-primary px-4 py-2 hover:opacity-95"
-          >
-            Get in touch
-          </Link>
-
-          {email ? (
-            <a href={`mailto:${email}`} className="text-sm text-muted-foreground hover:underline">
-              Email: {email}
-            </a>
-          ) : null}
-        </div>
       </div>
 
-      <div className="col-span-4">
+      <div className="col-span-12 md:col-span-4">
         <div className="rounded-lg border p-6 bg-card">
           <h4 className="text-lg font-semibold mb-3">Let's Discuss:</h4>
           <ArrowLink variant="primary" href="/contact?topic=Full-time%20Roles">

@@ -161,21 +161,23 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
       <main className="p-6">
         <section className="grid grid-cols-12 gap-6 items-start max-w-6xl mx-auto relative">
           {heroImageUrl && (
-            <div className="md:bottom-0 md:mx-auto top-10 md:top-5 col-span-4">
-              <img
-                src={heroImageUrl}
-                alt=""
-                aria-hidden="true"
-                className="w-full md:w-[100%] opacity-90 rounded mb-2"
-              />
-              <div className="sr-only">{heroImageAlt}</div>
-              <div className="text-xs mt-6">
+            <div className="md:bottom-0 md:mx-auto top-10 md:top-5 col-span-12 md:col-span-4 grid grid-cols-2 md:grid-cols-1 md:gap-2 gap-6">
+              <div className="col-span-1 md:col-span-2">
+                <img
+                  src={heroImageUrl}
+                  alt=""
+                  aria-hidden="true"
+                  className="opacity-90 rounded mb-2"
+                />
+                <div className="sr-only">{heroImageAlt}</div>
+              </div>
+              <div className="text-xs md:mt-6 col-span-1 md:col-span-2 mt-2">
                 <ContactSection contactEmail={site?.contactEmail} resumeUrl={site?.resumeUrl} />
               </div>
             </div>
           )}
-          <div className="hidden md:block md:col-span-6">
-            <h1 className="text-4xl font-extrabold mt-3">{site?.title}</h1>
+          <div className="md:block md:col-span-6 col-span-12">
+            <h1 className="text-4xl font-extrabold">{site?.title}</h1>
             <h2 className="text-xl font-medium">
               15 years of Customer-Focused Engineering and Design
             </h2>
