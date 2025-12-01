@@ -7,6 +7,7 @@ import ArrowLink from '@/components/ArrowLink';
 import ComboLink from '@/components/ComboLink';
 import { IconDuplicate, IconEnvelope, IconFileLines, IconOffice } from '@/components/icons';
 import SocialIcons from '@/components/SocialIcons';
+import { MessagePanel } from '@/components/ContactExperience';
 
 export default function Landing() {
   const [landingDataState, setLandingDataState] = React.useState<any>(null);
@@ -61,9 +62,6 @@ export default function Landing() {
   const { contactEmail, title, resumeUrl, siteName, siteDescription, siteUrl, social } = siteInfo;
   const heroImageUrl = landing?.heroImage ? urlFor(landing.heroImage).width(1200).url() : null;
   const heroHeadingText = heroHeading ? heroHeading.join(' x ') : null;
-  console.log('Landing data:', landing);
-  console.log('Site info data:', siteInfo);
-  console.log('Hero Heading:', heroHeading);
 
   const CTALinks = ({ classes }: { classes: string }) => {
     return (
@@ -142,7 +140,7 @@ export default function Landing() {
   };
   const HeroHeading = () => {
     return heroHeadingText ? (
-      <h2 className="text-3xl md:text-3xl font-semibold mb-4">
+      <h2 className="text-3xl md:text-3xl font-medium mb-4">
         {heroHeading &&
           heroHeading.map((text, index) => (
             <span key={index}>
@@ -175,6 +173,111 @@ export default function Landing() {
     );
   };
 
+  const Contact = () => {
+    return (
+      <div className="flex flex-col">
+        <Link href="/work-history" className="inline-block mb-3">
+          <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+            <IconOffice />
+            <span className="font-medium">View Work History</span>
+          </div>
+        </Link>
+        {resumeUrl ? (
+          <Link
+            href={resumeUrl}
+            download
+            className="inline-block mb-3"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+              <IconFileLines />
+              <span className="font-medium">Download Resume</span>
+            </div>
+          </Link>
+        ) : null}
+        <button
+          type="button"
+          onClick={() =>
+            (document.getElementById('contactModal') as HTMLDialogElement | null)?.showModal()
+          }
+          className="inline-block mb-3"
+        >
+          <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+            <IconEnvelope />
+            <span className="font-medium">Send a Message</span>
+          </div>
+        </button>
+
+        <dialog
+          id="contactModal"
+          className="rounded-md p-6 w-full max-w-lg bg-white text-black"
+          aria-label="Contact form"
+        >
+          <MessagePanel
+            title="Let's Connect about a:"
+            subtitleOptions={[
+              'Role Opportunity',
+              'Contracting Opportunity',
+              'Project Idea',
+              'General Inquiry',
+            ]}
+            emailLabel="Send a message"
+            onCancel={() =>
+              (document.getElementById('contactModal') as HTMLDialogElement | null)?.close()
+            }
+            onSend={async (payload: any) => {
+              try {
+                const res = await fetch('/api/contact', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload),
+                });
+                if (res.ok) {
+                  (document.getElementById('contactModal') as HTMLDialogElement | null)?.close();
+                } else {
+                  console.error('Contact API error', await res.text());
+                  // basic user feedback; MessagePanel may also show its own handling
+                  alert('Failed to send message. Please try again later.');
+                }
+              } catch (err) {
+                console.error('Contact send failed', err);
+                alert('Failed to send message. Please try again later.');
+              }
+            }}
+          />
+        </dialog>
+        {contactEmail && (
+          <button
+            type="button"
+            onClick={async () => {
+              try {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                  await navigator.clipboard.writeText(contactEmail);
+                } else {
+                  const el = document.createElement('textarea');
+                  el.value = contactEmail;
+                  document.body.appendChild(el);
+                  el.select();
+                  document.execCommand('copy');
+                  document.body.removeChild(el);
+                }
+              } catch (err) {
+                console.error('Copy failed', err);
+              }
+            }}
+            className="inline-block mb-3"
+          >
+            <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+              <IconDuplicate />
+              <span className="font-medium">Copy Email Address</span>
+            </div>
+          </button>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <Head>
@@ -189,68 +292,20 @@ export default function Landing() {
             <div className="px-6">
               <Title />
               <HeroHeading />
-              <SocialIcons social={social} />
-            </div>
-            <div className="flex flex-col mt-8">
-              <Link href="/work-history" className="inline-block mx-6 mb-3">
-                <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                  <IconOffice />
-                  <span className="font-medium">View Work History</span>
-                </div>
-              </Link>
-              {resumeUrl ? (
-                <Link
-                  href={resumeUrl}
-                  download
-                  className="inline-block mb-3 mx-6"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                    <IconFileLines />
-                    <span className="font-medium">Download Resume</span>
-                  </div>
-                </Link>
-              ) : null}
-              <Link href="/work-history" className="inline-block mx-6 mb-3">
-                <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                  <IconEnvelope />
-                  <span className="font-medium">Send a Message</span>
-                </div>
-              </Link>
-              {contactEmail && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    try {
-                      if (navigator.clipboard && navigator.clipboard.writeText) {
-                        await navigator.clipboard.writeText(contactEmail);
-                      } else {
-                        const el = document.createElement('textarea');
-                        el.value = contactEmail;
-                        document.body.appendChild(el);
-                        el.select();
-                        document.execCommand('copy');
-                        document.body.removeChild(el);
-                      }
-                    } catch (err) {
-                      console.error('Copy failed', err);
-                    }
-                  }}
-                  className="inline-block mx-6 mb-3"
-                >
-                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                    <IconDuplicate />
-                    <span className="font-medium">Copy Email Address</span>
-                  </div>
-                </button>
-              )}
+              <SocialIcons social={social} className="flex gap-6 justify-start" />
+              <div className="md:block hidden mt-10">
+                <Contact />
+              </div>
             </div>
           </div>
-          <div className="col-span-3 flex px-6">
+          <div className="col-span-3 flex flex-col justify-start px-6">
             <Tagline />
             <Summary />
+            <div className="md:hidden">
+              <Contact />
+            </div>
           </div>
+          <div className="flex flex-col mt-8"></div>
         </section>
       </main>
     </>

@@ -20,27 +20,6 @@ module.exports = {
         ],
       },
     },
-    typography: {
-      DEFAULT: {
-        css: {
-          a: {
-            textDecoration: 'underline',
-            fontWeight: '600',
-            color: 'inherit',
-          },
-          p: {
-            marginTop: '5px',
-            marginBottom: '5px',
-          },
-          h4: {
-            marginBottom: '0.5em',
-            fontWeight: '600',
-            fontSize: '1.25em',
-            lineHeight: '1.25',
-          },
-        },
-      },
-    },
   },
   plugins: [require('@tailwindcss/typography')],
 };

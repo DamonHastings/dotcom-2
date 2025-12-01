@@ -81,21 +81,6 @@ const Header: React.FC<{ site?: SiteInfo | null }> = ({ site }) =>
           ) : null}
         </div>
         <div className="flex items-center">
-          {/* <nav className="mr-4 text-sm">
-          <Link href="/projects" className="mr-4 hover:underline">
-            Projects
-          </Link>
-          <Link href="/about" className="mr-4 hover:underline">
-            About
-          </Link>
-          <Link href="/skills" className="mr-4 hover:underline">
-            Skills
-          </Link>
-          <Link href="/contact" className="hover:underline">
-            Contact
-          </Link>
-        </nav> */}
-          {/* <ThemeToggle /> */}
           <Link
             href="/work-history"
             className="text-cyan-400 hover:text-cyan-300 hover:text-decoration-line text-2xl"

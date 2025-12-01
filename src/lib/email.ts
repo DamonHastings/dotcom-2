@@ -1,4 +1,5 @@
 export type ContactPayload = {
+  subject?: string;
   name: string;
   email: string;
   message: string;
@@ -17,10 +18,13 @@ export async function sendContactEmail(payload: ContactPayload) {
   const sgMail = sgModule.default ?? sgModule;
   sgMail.setApiKey(apiKey);
 
-  const from = process.env.SENDGRID_FROM || `no-reply@${process.env.VERCEL_URL ?? 'example.com'}`;
-  const to = process.env.SENDGRID_TO || from;
+  const from =
+    payload.email ||
+    process.env.EMAIL_FROM ||
+    `no-reply@${process.env.VERCEL_URL ?? 'example.com'}`;
+  const to = process.env.NOTIFY_EMAIL;
 
-  const subject = `New contact from ${payload.name}`;
+  const subject = `${payload.subject} from ${payload.name}`;
   const text = `${payload.message}\n\n— ${payload.name} <${payload.email}>\nIP: ${
     payload.ip ?? 'unknown'
   }\nUA: ${payload.userAgent ?? 'unknown'}`;

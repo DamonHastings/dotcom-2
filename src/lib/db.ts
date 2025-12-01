@@ -1,4 +1,5 @@
 export type ContactMessage = {
+  subject?: string;
   name: string;
   email: string;
   message: string;

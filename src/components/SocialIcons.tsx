@@ -1,8 +1,8 @@
 import { IconGithub, IconLinkedin, IconTwitter, IconXTwitter } from './icons';
 
-const SocialIcons = ({ social }: { social: any[] }) => {
+const SocialIcons = ({ social, className }: { social: any[]; className?: string }) => {
   return (
-    <div className="flex space-x-6 justify-center md:justify-start">
+    <div className={className || 'flex space-x-6 justify-center md:justify-start'}>
       {social &&
         social.map((soc: any) => {
           {

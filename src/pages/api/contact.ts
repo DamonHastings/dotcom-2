@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { sendContactEmail } from '../../lib/email';
-import { saveContactMessage } from '../../lib/db';
-import { incrementAndCheck } from '../../lib/rateLimiter';
+import { sendContactEmail } from '@/lib/email';
+import { saveContactMessage } from '@/lib/db';
+import { incrementAndCheck } from '@/lib/rateLimiter';
 
 type Data = {
   success: boolean;
@@ -42,7 +42,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(405).json({ success: false, message: 'Method not allowed' });
   }
 
-  const { name, email, message, recaptchaToken } = req.body ?? {};
+  const { subject, name, email, message, recaptchaToken } = req.body ?? {};
 
   if (!name || !email || !message) {
     return res.status(400).json({ success: false, message: 'Missing required fields' });
@@ -66,6 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   // sanitize inputs
   const clean = {
+    subject: stripTags(subject).slice(0, 200),
     name: stripTags(name).slice(0, 200),
     email: stripTags(email).slice(0, 200),
     message: stripTags(message).slice(0, 2000),
@@ -77,6 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     // persist (best-effort) and notify
     await Promise.allSettled([
       saveContactMessage({
+        subject: clean.subject,
         name: clean.name,
         email: clean.email,
         message: clean.message,
@@ -84,6 +86,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         userAgent: clean.userAgent,
       }),
       sendContactEmail({
+        subject: clean.subject,
         name: clean.name,
         email: clean.email,
         message: clean.message,
