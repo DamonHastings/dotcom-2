@@ -162,7 +162,7 @@ export default function Landing() {
     );
   };
   const Tagline = () => {
-    return tagline ? <h3 className="text-xl mb-6">{tagline}</h3> : <></>;
+    return tagline ? <h3 className="text-xl mb-3">{tagline}</h3> : <></>;
   };
   const Summary = () => {
     return summary ? (
@@ -182,17 +182,15 @@ export default function Landing() {
       </Head>
 
       <main className="min-h-screen bg-slate-200 text-black relative">
-        <section className="grid grid-cols-1 md:grid-cols-6 pt-12 gap-10 max-w-6xl ">
-          {/* <div className="col-span-3">
-            <ProfileImage width={320} />
-          </div> */}
+        <section className="grid grid-cols-1 md:grid-cols-8 lg:grid-cols-8 pt-20 gap-0 max-w-6xl place-content-center">
+          <div className="col-span-1 hidden md:block"></div>
           <div className="col-span-3">
             <div className="px-6">
               <Title />
               <HeroHeading />
             </div>
-            <div className="flex flex-col">
-              <Link href="/work-history" className="inline-block mx-6 mb-6">
+            <div className="flex flex-col mt-8">
+              <Link href="/work-history" className="inline-block mx-6 mb-3">
                 <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
                   <IconOffice />
                   <span className="font-medium">View Work History</span>
@@ -202,7 +200,7 @@ export default function Landing() {
                 <Link
                   href={resumeUrl}
                   download
-                  className="inline-block mb-6 mx-6"
+                  className="inline-block mb-3 mx-6"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -212,21 +210,42 @@ export default function Landing() {
                   </div>
                 </Link>
               ) : null}
-              <Link href="/work-history" className="inline-block mx-6 mb-6">
+              <Link href="/work-history" className="inline-block mx-6 mb-3">
                 <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
                   <IconEnvelope />
                   <span className="font-medium">Send a Message</span>
                 </div>
               </Link>
-              <Link href="/work-history" className="inline-block mx-6 mb-6">
-                <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                  <IconDuplicate />
-                  <span className="font-medium">Copy Email Address</span>
-                </div>
-              </Link>
+              {contactEmail && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      if (navigator.clipboard && navigator.clipboard.writeText) {
+                        await navigator.clipboard.writeText(contactEmail);
+                      } else {
+                        const el = document.createElement('textarea');
+                        el.value = contactEmail;
+                        document.body.appendChild(el);
+                        el.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(el);
+                      }
+                    } catch (err) {
+                      console.error('Copy failed', err);
+                    }
+                  }}
+                  className="inline-block mx-6 mb-3"
+                >
+                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+                    <IconDuplicate />
+                    <span className="font-medium">Copy Email Address</span>
+                  </div>
+                </button>
+              )}
             </div>
           </div>
-          <div className="col-span-3 flex justify-end px-6">
+          <div className="col-span-3 flex px-6">
             <Tagline />
             <Summary />
           </div>
