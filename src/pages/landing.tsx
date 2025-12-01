@@ -6,6 +6,7 @@ import { PortableText } from '@portabletext/react';
 import ArrowLink from '@/components/ArrowLink';
 import ComboLink from '@/components/ComboLink';
 import { IconDuplicate, IconEnvelope, IconFileLines, IconOffice } from '@/components/icons';
+import SocialIcons from '@/components/SocialIcons';
 
 export default function Landing() {
   const [landingDataState, setLandingDataState] = React.useState<any>(null);
@@ -188,6 +189,7 @@ export default function Landing() {
             <div className="px-6">
               <Title />
               <HeroHeading />
+              <SocialIcons social={social} />
             </div>
             <div className="flex flex-col mt-8">
               <Link href="/work-history" className="inline-block mx-6 mb-3">
