@@ -43,7 +43,7 @@ export default function MessagePanel({
   const [selectedSubtitle, setSelectedSubtitle] = useState(initialSubtitle ?? subtitleOptions[0]);
 
   return (
-    <div className="border rounded-md bg-white shadow-sm p-4 max-w-xl">
+    <div className="rounded-md bg-white shadow-sm max-w-xl">
       <div className="grid grid-cols-5 md:grid-cols-4 gap-20">
         <div className="span col-span-5 md:col-span-5 mb-2">
           <div>
@@ -67,7 +67,7 @@ export default function MessagePanel({
             </div>
 
             <div className="mt-2">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+              <div className="flex-col space-y-4 mb-4">
                 <div>
                   <input
                     id="contact-name"
@@ -107,18 +107,7 @@ export default function MessagePanel({
         </div>
       </div>
 
-      <div className="mt-3 flex items-center justify-between">
-        <div className="flex items-center gap-4">
-          <label className="inline-flex items-center gap-2 text-sm">
-            <input
-              type="checkbox"
-              checked={contactByEmail}
-              onChange={(e) => setContactByEmail(e.target.checked)}
-            />
-            <span className="text-sm">Contact via email</span>
-          </label>
-        </div>
-
+      <div className="mt-3 flex items-center justify-end">
         <div className="flex items-center gap-2">
           <button
             onClick={() => onCancel?.()}

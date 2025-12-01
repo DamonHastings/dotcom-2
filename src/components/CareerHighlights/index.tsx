@@ -19,7 +19,7 @@ export default function CareerHighlights({ items }: { items?: HighlightItem[] })
     <section className="max-w-6xl mx-auto mb-12">
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
         {list.map((it, i) => (
-          <div key={i} className="bg-white/80 dark:bg-emerald-200/70 px-4 py-3 ">
+          <div key={i} className="bg-white/80 dark:bg-white px-4 py-3 ">
             <div className="text-xs text-muted-foreground uppercase tracking-wide">{it.label}</div>
             <div className="text-xl font-bold mt-1">{it.value}</div>
             {it.note ? <div className="text-sm text-muted-foreground mt-1">{it.note}</div> : null}

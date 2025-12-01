@@ -20,6 +20,7 @@ import {
 import Timeline from '@/components/Timeline';
 import { IconDuplicate, IconEnvelope, IconFileLines } from '@/components/icons';
 import Link from 'next/link';
+import ContactSection from '@/components/ContactSection';
 // Image import removed (unused)
 
 interface HomeProps {
@@ -160,7 +161,7 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
       <main className="p-6">
         <section className="grid grid-cols-12 gap-6 items-start max-w-6xl mx-auto relative">
           {heroImageUrl && (
-            <div className="pointer-events-none md:bottom-0 md:mx-auto top-10 md:top-5 col-span-4">
+            <div className="md:bottom-0 md:mx-auto top-10 md:top-5 col-span-4">
               <img
                 src={heroImageUrl}
                 alt=""
@@ -168,33 +169,8 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
                 className="w-full md:w-[100%] opacity-90 rounded mb-2"
               />
               <div className="sr-only">{heroImageAlt}</div>
-              <div className="text-xs mt-2">
-                {site?.resumeUrl ? (
-                  <Link
-                    href={site.resumeUrl}
-                    download
-                    className="inline-block mb-3"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                      <IconFileLines />
-                      <span className="font-medium">Download Resume</span>
-                    </div>
-                  </Link>
-                ) : null}
-                <Link href="/work-history" className="inline-block mb-3">
-                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                    <IconEnvelope />
-                    <span className="font-medium">Send a Message</span>
-                  </div>
-                </Link>
-                <Link href="/work-history" className="inline-block mb-6">
-                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
-                    <IconDuplicate />
-                    <span className="font-medium">Copy Email Address</span>
-                  </div>
-                </Link>
+              <div className="text-xs mt-6">
+                <ContactSection contactEmail={site?.contactEmail} resumeUrl={site?.resumeUrl} />
               </div>
             </div>
           )}
@@ -203,7 +179,7 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
             <h2 className="text-xl font-medium">
               15 years of Customer-Focused Engineering and Design
             </h2>
-            <Timeline experiences={timelineExperiences} startAtEnd topN={5} stepMs={500} />
+            <Timeline experiences={timelineExperiences} startAtEnd topN={10} stepMs={500} />
           </div>
           <div className="col-span-12 md:col-span-4 space-y-4 space-x- z-10"></div>
           {/* Heading overlay — use relative positioning on small screens and absolute on md */}
