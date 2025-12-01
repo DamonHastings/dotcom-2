@@ -33,7 +33,7 @@ export default defineType({
       title: 'Services',
       type: 'array',
       of: [
-        defineType({
+        {
           name: 'service',
           title: 'Service',
           type: 'object',
@@ -41,7 +41,7 @@ export default defineType({
             defineField({ name: 'title', type: 'string', validation: (Rule) => Rule.required() }),
             defineField({ name: 'description', type: 'text' }),
           ],
-        }),
+        },
       ],
     }),
     defineField({
@@ -49,7 +49,7 @@ export default defineType({
       title: 'Skills',
       type: 'array',
       of: [
-        defineType({
+        {
           name: 'skill',
           title: 'Skill',
           type: 'object',
@@ -62,7 +62,7 @@ export default defineType({
               description: 'e.g. Expert, Advanced, Intermediate',
             }),
           ],
-        }),
+        },
       ],
     }),
     defineField({
@@ -76,7 +76,7 @@ export default defineType({
       title: 'Social Links',
       type: 'array',
       of: [
-        defineType({
+        {
           name: 'socialLink',
           title: 'Social Link',
           type: 'object',
@@ -103,7 +103,7 @@ export default defineType({
               validation: (Rule) => Rule.required(),
             }),
           ],
-        }),
+        },
       ],
     }),
     defineField({

@@ -37,7 +37,7 @@ html.dark body {
 /* light/dark tokens and utility helpers can go here */
 
 /* Typography utility classes (consistent across site) */
-.\@layer components {
+@layer components {
   /* Apply typography to semantic heading elements and the .type-* helper classes
      so any <h1>/<h2>/<h3> (including Portable Text output) will receive the
      centralized typography styles. */
@@ -58,7 +58,7 @@ html.dark body {
 
   p,
   .type-body {
-    @apply text-base leading-relaxed text-slate-900 dark:text-slate-100 mb-3 last:mb-0;
+    @apply text-base leading-relaxed text-slate-900 mb-3 last:mb-0;
   }
 
   .type-lead {

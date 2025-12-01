@@ -85,7 +85,7 @@ export default function Timeline({
       const delta = now - lastTickRef.current;
       if (delta >= stepMs) {
         setCurrentMonth((m) => {
-          const next = m + 1;
+          const next = m + 3;
           if (next > maxMonth) {
             setPlaying(false);
             return maxMonth;
@@ -199,7 +199,7 @@ export default function Timeline({
   }, [showAll, currentMonth, sortedSkills]);
 
   return (
-    <div className="w-full py-4 bg-white rounded-lg shadow-sm">
+    <div className="w-full py-4 rounded-lg shadow-sm">
       <div className="mb-3 flex items-start justify-between">
         <div>
           <h3 className="text-lg font-semibold leading-tight mb-1">
@@ -224,7 +224,7 @@ export default function Timeline({
               }
               setPlaying((p) => !p);
             }}
-            className="inline-flex items-center justify-center w-9 h-9 rounded-full bg-white border text-white hover:bg-gray-100 focus:outline-none"
+            className="inline-flex items-center justify-center w-9 h-9 rounded-full  border text-white hover:bg-gray-100 focus:outline-none"
           >
             {playing ? (
               // Pause icon
@@ -232,8 +232,8 @@ export default function Timeline({
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 24 24"
                 className="w-5 h-5"
-                stroke="gray"
-                fill="white"
+                stroke="black"
+                fill="black"
                 aria-hidden
               >
                 <rect x="6" y="5" width="4" height="14" rx="1" />
@@ -246,7 +246,7 @@ export default function Timeline({
                 viewBox="0 0 24 24"
                 className="w-5 h-5"
                 stroke="gray"
-                fill="white"
+                fill="black"
               >
                 <path d="M5 3v18l15-9L5 3z" />
               </svg>

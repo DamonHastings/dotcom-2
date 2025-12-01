@@ -1,8 +1,55 @@
 import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
+import SummaryTimeline from '@/components/SummaryTimeline';
+import { fetchExperiences, type Experience } from '@/lib/sanity';
+import { GetStaticProps } from 'next';
 
-export default function Bio() {
+type BioProps = {
+  timelineItems: {
+    period: string;
+    company: string;
+    role: string;
+    summary: string;
+  }[];
+};
+
+export default async function Bio() {
+  const experiences: Experience[] = await fetchExperiences();
+  const timelineItems: {
+    period: string;
+    company: string;
+    role: string;
+    summary: string;
+  }[] = experiences.map((e) => ({
+    period: formatPeriod(e),
+    company: e.company || '—',
+    role: e.role ?? '',
+    summary: e.resume?.shortSummary ?? e.summary ?? '',
+  }));
+  const fallbackItems = [
+    {
+      period: '2021 - 2025',
+      company: 'Vouch Insurance',
+      role: 'Senior Software Engineer',
+      summary:
+        'Built and improved full‑stack insurance features at scale, focusing on frontend architecture, reliability, and cross‑functional delivery.',
+    },
+    {
+      period: '2020 - 2021',
+      company: 'Parsley Health',
+      role: 'Senior Software Engineer',
+      summary:
+        'Delivered full‑stack features for care delivery and patient workflows, improving reliability and developer velocity.',
+    },
+    {
+      period: '2018 - 2020',
+      company: 'Acme Co',
+      role: 'Software Engineer',
+      summary: 'Worked across web and backend systems to ship scalable features.',
+    },
+  ];
+  const displayedItems = timelineItems && timelineItems.length > 0 ? timelineItems : fallbackItems;
   return (
     <>
       <Head>
@@ -22,51 +69,38 @@ export default function Bio() {
             "'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
         }}
       >
-        <div className="max-w-6xl mx-auto py-12 text-xl">
+        <div className="max-w-6xl mx-auto pt-10 pb-2 text-md">
           <div className="grid grid-cols-12 gap-8">
             {/* Left content */}
             <div className="col-span-7">
               <section className="prose prose-invert max-w-none">
-                <h2
+                {/* <h2
                   className="text-3xl mb-4"
                   style={{
                     fontFamily: 'var(--font-fraunces, serif)',
                   }}
                 >
                   15 years of helping innovative teams drive goals through engineering & design.
-                </h2>
-                <p className="text-yellow-400 font-semibold leading-relaxed mb-6">
-                  I've built software that simplifies complexity, empowers communities, strengthens
-                  small businesses, and scales products for thousands of users. Along the way, I've
-                  developed a deep understanding of the systems that drive success, and the friction
-                  that stalls it.
+                </h2> */}
+                <p className="mb-6">
+                  Since age 10, I’ve had a passion for understanding how technology can be leveraged
+                  to solve human problems. That passion drove me to study programming, business
+                  administration, and economics. I’ve built a skillset that empowers me to
+                  effectively assess business goals, customer needs, and technological capabilities.
                 </p>
-                <hr className="mb-6 border-yellow-400" />
+                <p className="mb-6">
+                  I’ve worked across architecture, nonprofit, healthcare innovation, small business,
+                  and high-growth startups, executing mission-critical software projects and
+                  applying creative strategy to diverse business initiatives. I’ve learned how great
+                  teams build, ship, and scale high impact technological solutions. I’ve learned how
+                  small ideas grow into productive and profitable operations.
+                </p>
                 <p>
-                  My curiosity for technology began at an early age and turned into a lifelong
-                  passion for understanding how things work, and how to make them work better.
+                  Today, I apply this experience and expertise as both a senior-level engineer and a
+                  creative producer across mediums. I am excited about helping businesses, service
+                  providers, and innovators find creative and technical solutions to drive their
+                  missions forward. Think you might have a need for my expertise? Just reach out.
                 </p>
-
-                <p>
-                  I taught myself to take systems apart, rebuild them, and connect them. I followed
-                  that curiosity into programming, business, economics, design, and the arts, trying
-                  to understand not just technology, but the people, processes, and ideas it
-                  supports.
-                </p>
-
-                <p>
-                  Over the years, I've worked across architecture, nonprofits, healthcare
-                  innovation, small business operations, and high-growth startups. In each
-                  environment, I learned how teams build, how organizations grow, and how technology
-                  quietly carries the weight behind meaningful work.
-                </p>
-
-                <p>
-                  Today, I use that experience to help people bring ideas to life. To build products
-                  that make people better. To create tools that move missions forward. And to
-                  partner with teams who want to imagine what's possible, then actually build it.
-                </p>
-
                 <p className="mt-6">
                   Think you might have a need for my expertise? Just reach out.
                 </p>
@@ -104,19 +138,15 @@ export default function Bio() {
                 className="flex flex-col items-end gap-4 text-gray-300"
                 style={{ fontFamily: 'var(--font-fraunces, serif)' }}
               >
-                {/* <Link
-                  href="/work-history"
-                  className="text-cyan-400 hover:text-cyan-300 hover:text-decoration-line"
-                >
-                  View My Resume
-                </Link> */}
-                {/* <Link href="#availability" className="hover:text-white">
-                  Availability
-                </Link>
-                <Link href="#about" className="hover:text-white">
-                  About Me
-                </Link> */}
+                {/* Summary timeline component */}
+                {/* Imported dynamically below to keep render simple */}
               </nav>
+              <div className="mt-8">
+                {/* Summary timeline */}
+                {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+                {/* We'll import the component normally */}
+                <SummaryTimeline items={displayedItems} />
+              </div>
             </aside>
           </div>
         </div>
@@ -124,3 +154,33 @@ export default function Bio() {
     </>
   );
 }
+
+function formatPeriod(exp: Experience) {
+  const parseYear = (d?: string | null) => {
+    if (!d) return null;
+    const y = new Date(d).getFullYear();
+    return Number.isFinite(y) ? String(y) : null;
+  };
+  const start = parseYear(exp.startDate) || '';
+  const end = parseYear(exp.endDate) || (exp.endDate === null ? 'Present' : '');
+  if (start && end) return `${start} - ${end}`;
+  if (start && !end) return `${start} - Present`;
+  if (!start && end) return `${end}`;
+  return '';
+}
+
+export const getStaticProps: GetStaticProps<BioProps> = async () => {
+  try {
+    const experiences = await fetchExperiences();
+    const timelineItems = experiences.map((e) => ({
+      period: formatPeriod(e),
+      company: e.company || '—',
+      role: e.role ?? '',
+      summary: e.resume?.shortSummary ?? e.summary ?? '',
+    }));
+    return { props: { timelineItems }, revalidate: 60 };
+  } catch (err) {
+    // On error, return an empty timeline
+    return { props: { timelineItems: [] } };
+  }
+};

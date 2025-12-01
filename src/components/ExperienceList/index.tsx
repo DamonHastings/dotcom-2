@@ -11,7 +11,6 @@ import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
 
 interface Props {
   experiences: Experience[];
-  timeline: TimelineEntry[];
   /** Controlled selected index (optional). If provided, ExperienceList will notify via onSelectedIndexChange. */
   selectedIndex?: number;
   onSelectedIndexChange?: (i: number) => void;
@@ -239,26 +238,7 @@ export default function ExperienceList(props: Props) {
                 </article>
               ))}
             </div>
-            <div className="col-span-4 self-start">
-              <div className="sticky top-16 z-20">
-                <Timeline
-                  experiences={experiences.map((e) => ({
-                    ...e,
-                    technologies: e.technologies ?? undefined,
-                  }))}
-                  startAtEnd
-                  topN={10}
-                />
-
-                <div className="mt-6">
-                  <FullTimeRoleExperience
-                    resumeUrl="/resume.pdf"
-                    onMessage={handleMessage}
-                    onSchedule={handleSchedule}
-                  />
-                </div>
-              </div>
-            </div>
+            <div className="col-span-4 self-start"></div>
           </div>
         ) : (
           // Card mode: show single experience with prev/next
@@ -268,7 +248,7 @@ export default function ExperienceList(props: Props) {
               return (
                 <article
                   key={exp._id}
-                  className="relative grid md:grid-cols-12 md:items-start bg-white py-6 rounded-lg"
+                  className="relative grid md:grid-cols-12 md:items-start py-6 rounded-lg"
                 >
                   <div className="md:col-span-7">
                     <div className="pr-6">
@@ -276,13 +256,10 @@ export default function ExperienceList(props: Props) {
                         {exp.duration ? (
                           <div className="absolute top-0 right-0 mt-4 mr-4">
                             <div
-                              className="bg-emerald-100 rounded-lg px-4 py-3 shadow-md text-right flex flex-col items-end"
+                              className="bg-white rounded-lg px-4 py-3 text-right flex flex-col items-end"
                               aria-hidden="true"
                               style={{ minWidth: 96 }}
                             >
-                              <span className="text-xs uppercase tracking-wider opacity-90">
-                                Duration
-                              </span>
                               <span className="text-lg font-bold leading-tight">
                                 {exp.duration}
                               </span>
@@ -392,7 +369,7 @@ export default function ExperienceList(props: Props) {
                     )}
                   </div>
                   <div className="md:col-span-5 self-start">
-                    <div className="sticky top-16 z-20">
+                    <div className="">
                       <Timeline
                         experiences={[{ ...exp, technologies: exp.technologies ?? undefined }]}
                         startAtEnd

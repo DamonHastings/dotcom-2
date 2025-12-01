@@ -23,8 +23,8 @@ const CurrentGoals: React.FC = () => {
   const email = site?.contactEmail;
 
   return (
-    <section className="max-w-6xl mx-auto mb-8 grid gap-4 grid-cols-12">
-      <div className="rounded-lg border p-6 bg-card col-span-8">
+    <section className="max-w-6xl mx-auto mb-8 grid gap-4 grid-cols-12 bg-white p-6">
+      <div className=" p-6 bg-card col-span-8">
         <h3 className="text-2xl font-semibold mb-2">
           Open to full-time roles, fractional engineering leadership, and mission-driven
           collaborations.
@@ -38,7 +38,7 @@ const CurrentGoals: React.FC = () => {
         <div className="flex items-center space-x-3">
           <Link
             href="/contact"
-            className="inline-block rounded bg-primary px-4 py-2 text-white hover:opacity-95"
+            className="inline-block rounded bg-primary px-4 py-2 hover:opacity-95"
           >
             Get in touch
           </Link>

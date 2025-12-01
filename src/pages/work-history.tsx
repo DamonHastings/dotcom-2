@@ -18,7 +18,8 @@ import {
   type LandingPage,
 } from '@/lib/sanity';
 import Timeline from '@/components/Timeline';
-import { IconDuplicate } from '@/components/icons';
+import { IconDuplicate, IconEnvelope, IconFileLines } from '@/components/icons';
+import Link from 'next/link';
 // Image import removed (unused)
 
 interface HomeProps {
@@ -156,97 +157,55 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
           }
         />
       </Head>
-      <main className="px-6">
+      <main className="p-6">
         <section className="grid grid-cols-12 gap-6 items-start max-w-6xl mx-auto relative">
           {heroImageUrl && (
-            <div className="pointer-events-none md:bottom-0 md:mx-auto top-10 md:top-5 border-8 border-orange-200 col-span-4">
+            <div className="pointer-events-none md:bottom-0 md:mx-auto top-10 md:top-5 col-span-4">
               <img
                 src={heroImageUrl}
                 alt=""
                 aria-hidden="true"
-                className="w-full md:w-[100%] opacity-90 rounded"
+                className="w-full md:w-[100%] opacity-90 rounded mb-2"
               />
               <div className="sr-only">{heroImageAlt}</div>
-              <div className="text-xs">
-                <a
-                  href="/resume.pdf"
-                  download
-                  aria-label="Download resume"
-                  className="inline-flex items-center justify-center w-[100%] px-4 h-10 bg-gray-200 hover:bg-blue-700"
-                  title="Download resume"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    aria-hidden="true"
+              <div className="text-xs mt-2">
+                {site?.resumeUrl ? (
+                  <Link
+                    href={site.resumeUrl}
+                    download
+                    className="inline-block mb-3"
+                    target="_blank"
+                    rel="noopener noreferrer"
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 3v12m0 0l4-4m-4 4-4-4M21 21H3"
-                    />
-                  </svg>
-                  <span>Download Resume</span>
-                </a>
-
-                <a
-                  href="#"
-                  onClick={(e: React.MouseEvent) => {
-                    e.preventDefault();
-                    const email = 'damonjhastings@gmail.com';
-                    const copyText = async (text: string) => {
-                      if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
-                        try {
-                          await navigator.clipboard.writeText(text);
-                          alert(`Copied ${text} to clipboard`);
-                          return;
-                        } catch {
-                          // fallthrough to fallback
-                        }
-                      }
-                      const ta = document.createElement('textarea');
-                      ta.value = text;
-                      ta.style.position = 'fixed';
-                      ta.style.top = '0';
-                      ta.style.left = '0';
-                      ta.style.opacity = '0';
-                      document.body.appendChild(ta);
-                      ta.focus();
-                      ta.select();
-                      try {
-                        document.execCommand('copy');
-                        alert(`Copied ${text} to clipboard`);
-                      } catch {
-                        alert('Failed to copy email');
-                      } finally {
-                        document.body.removeChild(ta);
-                      }
-                    };
-                    void copyText(email);
-                  }}
-                  role="button"
-                  aria-label="Copy email address"
-                  className="inline-flex items-center justify-center w-[100%] h-10 bg-gray-100 px-4 hover:bg-gray-200 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-300"
-                  title="Copy email"
-                >
-                  <IconDuplicate className="w-5 h-5 mr-4" />
-                  <span>damonjhastings@gmail.com</span>
-                </a>
+                    <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+                      <IconFileLines />
+                      <span className="font-medium">Download Resume</span>
+                    </div>
+                  </Link>
+                ) : null}
+                <Link href="/work-history" className="inline-block mb-3">
+                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+                    <IconEnvelope />
+                    <span className="font-medium">Send a Message</span>
+                  </div>
+                </Link>
+                <Link href="/work-history" className="inline-block mb-6">
+                  <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
+                    <IconDuplicate />
+                    <span className="font-medium">Copy Email Address</span>
+                  </div>
+                </Link>
               </div>
             </div>
           )}
-          <div className="hidden md:block md:col-span-4">
-            <h2 className="text-2xl font-bold">
+          <div className="hidden md:block md:col-span-6">
+            <h1 className="text-4xl font-extrabold mt-3">{site?.title}</h1>
+            <h2 className="text-xl font-medium">
               15 years of Customer-Focused Engineering and Design
             </h2>
+            <Timeline experiences={timelineExperiences} startAtEnd topN={5} stepMs={500} />
           </div>
-          <div className="col-span-12 md:col-span-4 space-y-4 space-x- z-10">
-            <Timeline experiences={timelineExperiences} startAtEnd topN={5} />
-          </div>
+          <div className="col-span-12 md:col-span-4 space-y-4 space-x- z-10"></div>
           {/* Heading overlay — use relative positioning on small screens and absolute on md */}
           {/* <div className="relative md:absolute md:bottom-0 md:right-0 bg-transparent md:bg-white md:p-5 md:px-8 md:pl-6">
               <HeroHeading lines={heroLines} />
@@ -266,7 +225,7 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
         <CareerHighlights />
         <CurrentGoals />
 
-        <ExperienceList experiences={experiences} timeline={timeline} />
+        <ExperienceList experiences={experiences} />
 
         {/* <section className="max-w-6xl mx-auto mb-12">
           <h2 className="text-2xl font-bold mb-2">Things I've Done</h2>
