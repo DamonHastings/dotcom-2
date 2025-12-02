@@ -5,13 +5,11 @@ const CurrentGoals: React.FC = () => {
     <section className="max-w-6xl mx-auto mb-8 grid gap-4 grid-cols-12 bg-white p-6">
       <div className=" p-6 bg-card col-span-12 md:col-span-8">
         <h3 className="text-2xl font-semibold mb-2">
-          Open to full-time roles, fractional engineering leadership, and mission-driven
-          collaborations.
+          Open to full-time roles, project-based contracts, and mission-driven collaborations.
         </h3>
         <p className="text-muted-foreground mb-4">
-          I’m currently focused on building product-led experiences where design and engineering
-          ship closely together. Open to senior engineering or product roles, contract work, and
-          collaborative projects that explore fast experimentation and delightful UX.
+          I’m currently focused on building products that bring new capability to ambitious people.
+          Open to senior engineering roles, contract work, and collaborative projects.
         </p>
       </div>
 
