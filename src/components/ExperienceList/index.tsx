@@ -75,7 +75,7 @@ export default function ExperienceList(props: Props) {
               <article
                 id={`experience-${exp._id}`}
                 key={exp._id}
-                className="relative grid gap-6 md:grid-cols-12 md:items-start mb-2 col-span-8 md:col-span-12 bg-white p-10"
+                className="relative grid gap-6 md:grid-cols-12 md:items-start mb-2 col-span-12 bg-white p-10"
                 onClick={() => {
                   // update internal card index and notify parent if provided
                   setCardIndex(idx);
