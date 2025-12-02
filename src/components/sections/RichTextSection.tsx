@@ -5,8 +5,8 @@ import CTAGroup from '../ui/CTA';
 
 type RichTextSectionProps = {
   heading?: string;
-  content?: any[];
-  ctas?: any[];
+  content?: unknown[];
+  ctas?: unknown[];
 };
 
 const RichTextSection: React.FC<RichTextSectionProps> = ({ heading, content, ctas }) => {
@@ -16,7 +16,7 @@ const RichTextSection: React.FC<RichTextSectionProps> = ({ heading, content, cta
         <div className="prose max-w-none">
           {heading ? <h2 className="text-2xl font-semibold mb-4">{heading}</h2> : null}
           {content && content.length ? (
-            <PortableText value={content} components={ptComponents as any} />
+            <PortableText value={content} components={ptComponents as unknown} />
           ) : (
             <p className="text-sm text-muted-foreground">No content yet — edit in the Studio.</p>
           )}

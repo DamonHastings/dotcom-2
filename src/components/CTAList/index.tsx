@@ -7,13 +7,11 @@ export interface CTAItem {
 }
 
 export interface CTAListProps {
-  primary: CTAItem[]; // top group
   secondary?: CTAItem[]; // bottom group
   className?: string;
-  divider?: boolean;
 }
 
-export function CTAList({ primary, secondary, className = '', divider = true }: CTAListProps) {
+export function CTAList({ secondary, className = '' }: CTAListProps) {
   return (
     <div className={`flex flex-col gap-4 text-sm ${className}`}>
       {/* <div className="space-y-1 bg-primary/5">

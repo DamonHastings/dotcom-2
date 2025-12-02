@@ -24,7 +24,9 @@ export default defineType({
   preview: {
     select: { title: 'label', subtitle: 'href' },
     prepare(selection) {
-      const { title, subtitle } = selection as any;
+      const sel = selection as Record<string, unknown>;
+      const title = sel.title as string | undefined;
+      const subtitle = sel.subtitle as string | undefined;
       return { title: title || 'CTA', subtitle };
     },
   },

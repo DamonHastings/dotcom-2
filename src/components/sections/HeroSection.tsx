@@ -6,9 +6,9 @@ type HeroSectionProps = {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
-  backgroundImage?: any;
+  backgroundImage?: unknown;
   imageAlt?: string;
-  ctas?: any[];
+  ctas?: unknown[];
   unoptimized?: boolean;
 };
 

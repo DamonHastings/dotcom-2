@@ -8,7 +8,7 @@ const meta: Meta = {
 
 export default meta;
 
-const sampleBlocks = [
+const sampleBlocks: unknown[] = [
   {
     _type: 'block',
     style: 'h1',
@@ -45,6 +45,6 @@ const sampleBlocks = [
 
 export const PortableTextPreview = () => (
   <div style={{ padding: 24 }}>
-    <PortableText value={sampleBlocks as any} components={ptComponents as any} />
+    <PortableText value={sampleBlocks} components={ptComponents as unknown} />
   </div>
 );

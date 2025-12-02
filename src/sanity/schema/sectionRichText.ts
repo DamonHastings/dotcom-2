@@ -23,7 +23,8 @@ export default defineType({
   preview: {
     select: { title: 'heading' },
     prepare(selection) {
-      const { title } = selection as any;
+      const sel = selection as Record<string, unknown>;
+      const title = sel.title as string | undefined;
       return { title: title || 'Rich text' };
     },
   },

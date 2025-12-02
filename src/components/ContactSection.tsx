@@ -19,23 +19,33 @@ export default function ContactSection({ contactEmail, resumeUrl }: Props) {
     // expose a global helper so other components (like CurrentGoals) can open
     // the contact dialog with a pre-selected topic.
     if (typeof window !== 'undefined') {
-      (window as any).openContactModalWithTopic = (topic?: string) => {
+      const w = window as unknown as { openContactModalWithTopic?: (topic?: string) => void };
+      w.openContactModalWithTopic = (topic?: string) => {
         setModalTopic(topic);
         const dlg = document.getElementById('contactModal') as HTMLDialogElement | null;
         if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
       };
+      return () => {
+        delete w.openContactModalWithTopic;
+      };
     }
-
-    return () => {
-      if (typeof window !== 'undefined') delete (window as any).openContactModalWithTopic;
-    };
   }, []);
 
   /**
    * Wrapper Link: renders a non-interactive element when href === currentPath.
    */
-  const Link = ({ href, className, children, ...rest }: any) => {
-    const hrefStr = typeof href === 'string' ? href : href?.pathname ?? '';
+  const Link = ({
+    href,
+    className,
+    children,
+    ...rest
+  }: {
+    href: string | { pathname?: string };
+    className?: string;
+    children?: React.ReactNode;
+  } & Record<string, unknown>) => {
+    const hrefStr =
+      typeof href === 'string' ? href : (href as { pathname?: string })?.pathname ?? '';
     const isCurrent = currentPath && hrefStr === currentPath;
 
     if (isCurrent) {
@@ -112,12 +122,12 @@ export default function ContactSection({ contactEmail, resumeUrl }: Props) {
           onCancel={() =>
             (document.getElementById('contactModal') as HTMLDialogElement | null)?.close()
           }
-          onSend={async (payload: any) => {
+          onSend={async (payload: unknown) => {
             try {
               const res = await fetch('/api/contact', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload),
+                body: JSON.stringify(payload as Record<string, unknown>),
               });
               if (res.ok) {
                 (document.getElementById('contactModal') as HTMLDialogElement | null)?.close();

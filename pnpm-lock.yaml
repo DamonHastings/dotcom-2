@@ -11,6 +11,9 @@ importers:
       '@portabletext/react':
         specifier: ^2.0.0
         version: 2.0.3(react@18.3.1)
+      '@react-icons/all-files':
+        specifier: ^4.1.0
+        version: 4.1.0(react@18.3.1)
       '@sanity/block-content-to-hyperscript':
         specifier: ^3.0.1
         version: 3.0.1
@@ -56,6 +59,9 @@ importers:
       react-flip-toolkit:
         specifier: ^7.2.4
         version: 7.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      react-icons:
+        specifier: ^5.5.0
+        version: 5.5.0(react@18.3.1)
       sanity:
         specifier: ^4.17.0
         version: 4.17.0(@emotion/is-prop-valid@1.2.2)(@portabletext/sanity-bridge@1.2.3(@sanity/schema@4.17.0(@types/react@19.2.6)(debug@4.4.3))(@sanity/types@4.17.0(@types/react@19.2.6)(debug@4.4.3)))(@types/node@24.10.1)(@types/react@19.2.6)(immer@10.2.0)(jiti@2.6.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(styled-components@6.1.19(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(terser@5.44.1)(typescript@5.3.3)(yaml@2.8.1)
@@ -2383,6 +2389,11 @@ packages:
 
   '@radix-ui/rect@1.0.1':
     resolution: {integrity: sha512-fyrgCaedtvMg9NK3en0pnOYJdtfwxUcNolezkNPUsoX57X8oQk+NkqcvzHXD2uKNij6GXmWU9NDru2IWjrO4BQ==}
+
+  '@react-icons/all-files@4.1.0':
+    resolution: {integrity: sha512-hxBI2UOuVaI3O/BhQfhtb4kcGn9ft12RWAFVMUeNjqqhLsHvFtzIkFaptBJpFDANTKoDfdVoHTKZDlwKCACbMQ==}
+    peerDependencies:
+      react: '*'
 
   '@rexxars/react-json-inspector@9.0.1':
     resolution: {integrity: sha512-4uZ4RnrVoOGOShIKKcPoF+qhwDCZJsPPqyoEoW/8HRdzNknN9Q2yhlbEgTX1lMZunF1fv7iHzAs+n1vgIgfg/g==}
@@ -7004,6 +7015,11 @@ packages:
       typescript:
         optional: true
 
+  react-icons@5.5.0:
+    resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
+    peerDependencies:
+      react: '*'
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -10743,6 +10759,10 @@ snapshots:
   '@radix-ui/rect@1.0.1':
     dependencies:
       '@babel/runtime': 7.28.4
+
+  '@react-icons/all-files@4.1.0(react@18.3.1)':
+    dependencies:
+      react: 18.3.1
 
   '@rexxars/react-json-inspector@9.0.1(react@18.3.1)':
     dependencies:
@@ -16516,6 +16536,10 @@ snapshots:
     optionalDependencies:
       react-dom: 18.3.1(react@18.3.1)
       typescript: 5.3.3
+
+  react-icons@5.5.0(react@18.3.1):
+    dependencies:
+      react: 18.3.1
 
   react-is@16.13.1: {}
 

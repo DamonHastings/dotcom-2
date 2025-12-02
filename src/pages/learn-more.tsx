@@ -7,10 +7,10 @@ import { urlFor } from '@/lib/sanity';
 type Props = {
   imageSrc: string;
   imageAlt?: string;
-  content?: any[];
+  content?: unknown[];
   title?: string | null;
-  hero?: any;
-  sections?: any[];
+  hero?: unknown;
+  sections?: unknown[];
 };
 
 const LearnMore = ({ imageSrc, imageAlt, content, title, hero, sections }: Props) => {
@@ -37,7 +37,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
     // Try to fetch a flexiblePage with slug "learn-more" first
     const flexibleQuery = `*[_type == "flexiblePage" && slug.current == "learn-more"][0]{title, slug, hero, sections}`;
-    const flexible: any = await client.fetch(flexibleQuery);
+    const flexible = (await client.fetch(flexibleQuery)) as unknown;
 
     if (flexible) {
       const imageSrc = flexible?.hero?.backgroundImage
@@ -68,7 +68,7 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
 
     // Fallback to legacy learnMore document
     const query = `*[_type == "learnMore"][0]{title, image, imageAlt, content}`;
-    const data: any = await client.fetch(query);
+    const data = (await client.fetch(query)) as unknown;
 
     const imageSrc = data?.image ? urlFor(data.image).width(1200).url() : '/placeholder.png';
     const imageAlt = data?.imageAlt || data?.title || 'Learn more image';

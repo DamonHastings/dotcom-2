@@ -1,5 +1,5 @@
 import React from 'react';
-import SkillTimeline, { TimelineEntry } from '@/components/SkillTimeline';
+import type { TimelineEntry } from '@/components/SkillTimeline';
 import ExperienceList from '@/components/ExperienceList';
 import type { Experience } from '@/lib/sanity';
 

@@ -31,7 +31,9 @@ export default defineType({
   preview: {
     select: { title: 'title', slug: 'slug.current', media: 'image' },
     prepare(selection) {
-      const { title, slug } = selection as any;
+      const sel = selection as Record<string, unknown>;
+      const title = sel.title as string | undefined;
+      const slug = sel.slug as string | undefined;
       return {
         title: title || 'Learn More',
         subtitle: slug ? `/${slug}` : '/learn-more',

@@ -8,9 +8,9 @@ type Props = {
   title?: string | null;
   imageSrc: string;
   imageAlt?: string;
-  content?: any[];
-  hero?: any;
-  sections?: any[];
+  content?: unknown[];
+  hero?: unknown;
+  sections?: unknown[];
 };
 
 export default function SlugPage({ title, imageSrc, imageAlt, content, hero, sections }: Props) {
@@ -45,7 +45,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   try {
     // Prefer flexible pages
     const flexibleQuery = `*[_type == "flexiblePage" && slug.current == $slug][0]{title, slug, hero, sections}`;
-    const flexible: any = await client.fetch(flexibleQuery, { slug });
+    const flexible = (await client.fetch(flexibleQuery, { slug })) as unknown;
 
     if (flexible) {
       const imageSrc = flexible?.hero?.backgroundImage
@@ -76,7 +76,7 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     // Add types here as you create them.
     const typesWithSlug = ['learnMore', 'project'];
     const docQuery = `*[_type in $types && slug.current == $slug][0]{_type, title, slug, image, imageAlt, content, ctas, description, coverImage, subtitle}`;
-    const doc: any = await client.fetch(docQuery, { types: typesWithSlug, slug });
+    const doc = (await client.fetch(docQuery, { types: typesWithSlug, slug })) as unknown;
 
     if (!doc) return { notFound: true };
 

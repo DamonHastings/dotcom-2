@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import type { SchedulePayload } from './types';
-import { IconGrid, IconDownload, IconEnvelope } from '../icons';
-import IconButton from '../Button/CircleIconButton';
+// icons and icon button were unused in this component
 
 type Props = {
   title?: string;
@@ -9,9 +8,6 @@ type Props = {
   subtitleOptions?: string[];
   /** initial selected subtitle/topic */
   initialSubtitle?: string;
-  resumeUrl?: string;
-  emailLabel?: string;
-  profileLabel?: string;
   onSend?: (message: {
     name: string;
     email: string;
@@ -28,18 +24,14 @@ export default function MessagePanel({
   title = "Let's discuss:",
   subtitleOptions = ['Full-Time Roles', 'Contracting Opportunities', 'Project Ideas', 'Other'],
   initialSubtitle,
-  resumeUrl = '/resume.pdf',
-  emailLabel = 'Email in profile',
-  profileLabel = 'Profile',
   onSend,
-  onSchedule,
   onCancel,
 }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
-  const [includeResume, setIncludeResume] = useState(true);
-  const [contactByEmail, setContactByEmail] = useState(true);
+  const [includeResume] = useState(true);
+  const [contactByEmail] = useState(true);
   const [selectedSubtitle, setSelectedSubtitle] = useState(initialSubtitle ?? subtitleOptions[0]);
 
   // Update selected subtitle when the parent changes `initialSubtitle`.

@@ -26,7 +26,9 @@ export default defineType({
   preview: {
     select: { title: 'title', subtitle: 'subtitle', media: 'backgroundImage' },
     prepare(selection) {
-      const { title, subtitle } = selection as any;
+      const sel = selection as Record<string, unknown>;
+      const title = sel.title as string | undefined;
+      const subtitle = sel.subtitle as string | undefined;
       return { title: title || 'Hero', subtitle };
     },
   },

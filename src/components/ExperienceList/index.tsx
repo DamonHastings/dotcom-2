@@ -1,13 +1,8 @@
 import React, { useState } from 'react';
 import { PortableText } from '@portabletext/react';
 import { type Experience } from '@/lib/sanity';
-// Note: moved the "View All" control below the component; no link import needed here
-import { IconCodeBracketSquare, IconBars4 } from '@/components/icons';
-import type { TimelineEntry } from '@/components/SkillTimeline';
 import Timeline from '@/components/Timeline';
-import { FullTimeRoleExperience } from '@/components/ContactExperience';
-import type { SchedulePayload } from '@/components/ContactExperience';
-import ptComponents, { blockRenderer } from '@/lib/portableTextComponents';
+import ptComponents from '@/lib/portableTextComponents';
 
 interface Props {
   experiences: Experience[];
@@ -20,8 +15,6 @@ type Tab = 'story' | 'highlights';
 
 export default function ExperienceList(props: Props) {
   const { experiences } = props;
-  if (!experiences || experiences.length === 0) return null;
-
   // Global view toggle for all experience items
   const [viewTab, setViewTab] = useState<Tab>('highlights');
 
@@ -35,23 +28,12 @@ export default function ExperienceList(props: Props) {
     setCardIndexState(i);
   };
 
-  const count = experiences.length;
+  const count = experiences?.length ?? 0;
   const goto = (i: number) => setCardIndex(((i % count) + count) % count);
   // track which index to return to when leaving story/card view so we can scroll back
   const [returnToIndex, setReturnToIndex] = useState<number | null>(null);
 
-  const handleMessage = () => {
-    // Navigate to a contact page or open a messaging UI. Replace as needed.
-    if (typeof window !== 'undefined') window.location.href = '/contact';
-  };
-
-  const handleSchedule = (payload: SchedulePayload) => {
-    // Placeholder booking handler — replace with API call to /api/book or your scheduling provider
-    // eslint-disable-next-line no-console
-    console.log('Schedule requested', payload);
-    // eslint-disable-next-line no-alert
-    alert(`Requested schedule: ${new Date(payload.slot).toLocaleString()} — ${payload.purpose}`);
-  };
+  if (!experiences || experiences.length === 0) return null;
 
   return (
     <section className="max-w-6xl mx-auto mb-12">
@@ -87,106 +69,104 @@ export default function ExperienceList(props: Props) {
         {mode === 'list' ? (
           <div className="grid grid-cols-12 gap-6">
             {experiences.map((exp, idx) => (
-              <>
-                <article
-                  id={`experience-${exp._id}`}
-                  key={exp._id}
-                  className="relative grid gap-6 md:grid-cols-12 md:items-start mb-2 col-span-8 md:col-span-12 bg-white p-10"
-                  onClick={() => {
-                    // update internal card index and notify parent if provided
-                    setCardIndex(idx);
-                  }}
-                >
-                  <div className="col-span-12 md:col-span-8">
-                    <div>
-                      <div className="relative">
-                        {exp.duration ? (
-                          <div className="absolute top-0 right-0 mr-4">
-                            <div
-                              className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-end"
-                              aria-hidden="true"
-                              style={{ minWidth: 96 }}
-                            >
-                              <span className="text-md font-bold leading-tight justify-center">
-                                {exp.duration}
-                              </span>
-                            </div>
-                          </div>
-                        ) : null}
-
-                        <div className="mb-3">
-                          <h3 className="text-lg md:text-2xl font-bold leading-tight mb-0">
-                            {exp.company}
-                          </h3>
-                          {exp.role ? <p className="text-lg mb-0">{exp.role}</p> : null}
-                          <span className="text-sm">
-                            {exp.startDate} — {exp.endDate}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                    <div>
-                      {/* Prefer `resume.shortSummary`, fall back to `summary` for a short intro */}
-                      {(exp.resume?.shortSummary || exp.summary) && (
-                        <p className="text-base leading-relaxed mb-2">
-                          {exp.resume?.shortSummary ?? exp.summary}
-                        </p>
-                      )}
-
-                      {/* Prefer `resume.bullets`, fall back to `responsibilities` which editors may have used */}
-                      {(exp.resume?.bullets && exp.resume.bullets.length) ||
-                      (exp.responsibilities && exp.responsibilities.length) ? (
-                        <ul className="mt-3 list-disc list-inside">
-                          {(exp.resume?.bullets && exp.resume.bullets.length
-                            ? exp.resume.bullets
-                            : exp.responsibilities || []
-                          ).map((b, i) => (
-                            <li key={i} className="text-sm mb-3">
-                              {b}
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-muted-foreground">No highlights available.</p>
-                      )}
-                    </div>
-                    {/* spacer to separate items visually */}
-                    {/* View Story button bottom-right of each experience */}
-                    {exp.story ? (
-                      <div className="right-0 bottom-0 mr-0 mb-0 flex justify-end">
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            // remember where we came from so we can scroll back
-                            setReturnToIndex(idx);
-                            setCardIndex(idx);
-                            setViewTab('story');
-                            setMode('card');
-                          }}
-                          className="px-3 py-1 m-3 outline outline-1 outline-gray-300 font-semibold rounded-md shadow-sm text-sm"
-                        >
-                          View Story
-                        </button>
-                      </div>
-                    ) : null}
-                    <div className="mb-6" />
-                  </div>
-                  <div className="col-span-12 md:col-span-4">
-                    {exp.technologies && exp.technologies.length ? (
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {exp.technologies.map((t, i) => (
-                          <span
-                            key={i}
-                            className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
+              <article
+                id={`experience-${exp._id}`}
+                key={exp._id}
+                className="relative grid gap-6 md:grid-cols-12 md:items-start mb-2 col-span-8 md:col-span-12 bg-white p-10"
+                onClick={() => {
+                  // update internal card index and notify parent if provided
+                  setCardIndex(idx);
+                }}
+              >
+                <div className="col-span-12 md:col-span-8">
+                  <div>
+                    <div className="relative">
+                      {exp.duration ? (
+                        <div className="absolute top-0 right-0 mr-4">
+                          <div
+                            className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-end"
+                            aria-hidden="true"
+                            style={{ minWidth: 96 }}
                           >
-                            {t}
-                          </span>
-                        ))}
+                            <span className="text-md font-bold leading-tight justify-center">
+                              {exp.duration}
+                            </span>
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="mb-3">
+                        <h3 className="text-lg md:text-2xl font-bold leading-tight mb-0">
+                          {exp.company}
+                        </h3>
+                        {exp.role ? <p className="text-lg mb-0">{exp.role}</p> : null}
+                        <span className="text-sm">
+                          {exp.startDate} — {exp.endDate}
+                        </span>
                       </div>
-                    ) : null}
+                    </div>
                   </div>
-                </article>
-              </>
+                  <div>
+                    {/* Prefer `resume.shortSummary`, fall back to `summary` for a short intro */}
+                    {(exp.resume?.shortSummary || exp.summary) && (
+                      <p className="text-base leading-relaxed mb-2">
+                        {exp.resume?.shortSummary ?? exp.summary}
+                      </p>
+                    )}
+
+                    {/* Prefer `resume.bullets`, fall back to `responsibilities` which editors may have used */}
+                    {(exp.resume?.bullets && exp.resume.bullets.length) ||
+                    (exp.responsibilities && exp.responsibilities.length) ? (
+                      <ul className="mt-3 list-disc list-inside">
+                        {(exp.resume?.bullets && exp.resume.bullets.length
+                          ? exp.resume.bullets
+                          : exp.responsibilities || []
+                        ).map((b, i) => (
+                          <li key={i} className="text-sm mb-3">
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">No highlights available.</p>
+                    )}
+                  </div>
+                  {/* spacer to separate items visually */}
+                  {/* View Story button bottom-right of each experience */}
+                  {exp.story ? (
+                    <div className="right-0 bottom-0 mr-0 mb-0 flex justify-end">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          // remember where we came from so we can scroll back
+                          setReturnToIndex(idx);
+                          setCardIndex(idx);
+                          setViewTab('story');
+                          setMode('card');
+                        }}
+                        className="px-3 py-1 m-3 outline outline-1 outline-gray-300 font-semibold rounded-md shadow-sm text-sm"
+                      >
+                        View Story
+                      </button>
+                    </div>
+                  ) : null}
+                  <div className="mb-6" />
+                </div>
+                <div className="col-span-12 md:col-span-4">
+                  {exp.technologies && exp.technologies.length ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {exp.technologies.map((t, i) => (
+                        <span
+                          key={i}
+                          className="text-xs border-gray-100 dark:border-gray-800 text-muted-foreground px-3 py-0.5 rounded-full border border-transparent"
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </div>
+              </article>
             ))}
           </div>
         ) : (

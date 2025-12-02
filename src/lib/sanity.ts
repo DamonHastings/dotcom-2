@@ -38,12 +38,19 @@ export function urlFor(source: any) {
     // eslint-disable-next-line no-console
     console.warn('[sanity] urlFor called without configured image builder');
     // Return a small chainable stub so callers that do `.width(...).url()` won't crash.
-    const stub: any = {
-      image: (_: any) => stub,
-      width: (_: number) => stub,
-      height: (_: number) => stub,
-      fit: (_: any) => stub,
-      auto: (_: any) => stub,
+    const stub: {
+      image: (...args: unknown[]) => any;
+      width: (...args: unknown[]) => any;
+      height: (...args: unknown[]) => any;
+      fit: (...args: unknown[]) => any;
+      auto: (...args: unknown[]) => any;
+      url: () => string;
+    } = {
+      image: () => stub,
+      width: () => stub,
+      height: () => stub,
+      fit: () => stub,
+      auto: () => stub,
       url: () => '',
     };
     return stub as any;

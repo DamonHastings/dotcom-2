@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Link from 'next/link';
+// Link not used in this page
 import React from 'react';
 import SummaryTimeline from '@/components/SummaryTimeline';
 import { fetchExperiences, type Experience } from '@/lib/sanity';
@@ -55,11 +55,7 @@ export default async function Bio() {
       <Head>
         <title>Damon Hastings — Bio</title>
         <meta name="description" content="Damon Hastings — Software Engineer & Media Designer" />
-        {/* Load Fraunces from Google Fonts and prefer swap for performance. */}
-        <link
-          href="https://fonts.googleapis.com/css2?family=Fraunces:wght@300;400;600;700;900&display=swap"
-          rel="stylesheet"
-        />
+        {/* Fonts moved to `_document.tsx` to satisfy Next.js font loading guidelines */}
       </Head>
 
       <main

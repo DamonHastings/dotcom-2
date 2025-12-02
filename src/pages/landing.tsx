@@ -1,16 +1,15 @@
 import Head from 'next/head';
 import React from 'react';
-import Link from 'next/link';
-import { fetchLanding, fetchSiteInfo, urlFor } from '@/lib/sanity';
+// Link import removed (unused)
+import { fetchLanding, fetchSiteInfo } from '@/lib/sanity';
 import { PortableText } from '@portabletext/react';
-import ArrowLink from '@/components/ArrowLink';
-import ComboLink from '@/components/ComboLink';
+// ArrowLink/ComboLink imports removed (unused after cleanup)
 import SocialIcons from '@/components/SocialIcons';
 import ContactSection from '@/components/ContactSection';
 
 export default function Landing() {
-  const [landingDataState, setLandingDataState] = React.useState<any>(null);
-  const [siteInfoDataState, setSiteInfoDataState] = React.useState<any>(null);
+  const [landingDataState, setLandingDataState] = React.useState<unknown | null>(null);
+  const [siteInfoDataState, setSiteInfoDataState] = React.useState<unknown | null>(null);
 
   React.useEffect(() => {
     let mounted = true;
@@ -38,101 +37,23 @@ export default function Landing() {
     tagline?: string;
     description?: string;
     email?: string;
-    heroImage?: any;
+    heroImage?: unknown;
     heroHeading?: string[];
     pageTitle?: string;
     pageDescription?: string;
-    summary?: any;
+    summary?: unknown;
   };
   const landing = (landingDataState ?? {}) as LandingData;
-  const siteInfo = siteInfoDataState ?? {};
+  const siteInfo = (siteInfoDataState ?? {}) as Record<string, unknown>;
 
-  const {
-    name,
-    tagline,
-    description,
-    email,
-    heroImage,
-    heroHeading,
-    pageTitle,
-    pageDescription,
-    summary,
-  } = landing;
-  const { contactEmail, title, resumeUrl, siteName, siteDescription, siteUrl, social } = siteInfo;
-  const heroImageUrl = landing?.heroImage ? urlFor(landing.heroImage).width(1200).url() : null;
+  const { tagline, heroHeading, pageTitle, pageDescription, summary } = landing;
+  const contactEmail = siteInfo.contactEmail as string | undefined;
+  const title = siteInfo.title as string | undefined;
+  const resumeUrl = siteInfo.resumeUrl as string | undefined;
+  const social = siteInfo.social as unknown as unknown[] | undefined;
   const heroHeadingText = heroHeading ? heroHeading.join(' x ') : null;
 
-  const CTALinks = ({ classes }: { classes: string }) => {
-    return (
-      <div>
-        {contactEmail && (
-          <ArrowLink variant="primary" href={`mailto:${contactEmail}`} className={classes}>
-            {contactEmail}
-          </ArrowLink>
-        )}
-        {resumeUrl && (
-          <ArrowLink variant="secondary" href={resumeUrl}>
-            View Resume
-          </ArrowLink>
-        )}
-      </div>
-    );
-  };
-
-  const ProfileImage = ({ width = 320, height = 320 }: { width?: number; height?: number }) => {
-    if (!heroImageUrl) return null;
-    return (
-      <div>
-        <img
-          src={heroImageUrl}
-          alt={name || 'Hero Image'}
-          width={width}
-          height={height}
-          className={`max-w-[100%] md:w-[${width}px] `}
-        />
-      </div>
-    );
-  };
-
-  const ContactLinks = () => {
-    return (
-      <div className="grid gap-2 mb-4">
-        {resumeUrl && (
-          <div className="bg-white px-4 py-2">
-            <ComboLink
-              variant="text"
-              links={[
-                {
-                  href: '',
-                  iconName: 'download',
-                },
-                {
-                  href: '/work-history',
-                  iconName: 'view',
-                },
-              ]}
-            >
-              Resume
-            </ComboLink>
-          </div>
-        )}
-
-        {contactEmail && (
-          <div className="bg-white px-4 py-2">
-            <ComboLink
-              variant="text"
-              links={[
-                { href: '', iconName: 'copy' },
-                { href: `mailto:${contactEmail}`, iconName: 'email' },
-              ]}
-            >
-              Email
-            </ComboLink>
-          </div>
-        )}
-      </div>
-    );
-  };
+  // removed unused helper components to avoid lint noise
 
   const Title = () => {
     return title ? <h1 className="text-4xl font-extrabold ">{title}</h1> : <></>;

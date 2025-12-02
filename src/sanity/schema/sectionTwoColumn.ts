@@ -29,7 +29,8 @@ export default defineType({
   preview: {
     select: { title: 'left[0].children[0].text' },
     prepare(selection) {
-      const { title } = selection as any;
+      const sel = selection as Record<string, unknown>;
+      const title = sel.title as string | undefined;
       return { title: title ? `${String(title).slice(0, 40)}…` : 'Two column' };
     },
   },

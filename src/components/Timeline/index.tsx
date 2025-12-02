@@ -56,8 +56,8 @@ export default function Timeline({
     : parseDateToMonthIndex(new Date().toISOString());
   const maxMonth = normalized.length ? Math.max(...normalized.map((e) => e.endMonth)) : minMonth;
 
-  const totalCareerMonths = Math.max(1, maxMonth - minMonth);
-
+  // total career months (may be unused depending on display choices)
+  // const totalCareerMonths = Math.max(1, maxMonth - minMonth);
   // all skills
   const skills = useMemo(() => {
     const set = new Set<string>();
@@ -170,7 +170,7 @@ export default function Timeline({
         if (aIsCurrent !== bIsCurrent) return aIsCurrent - bIsCurrent; // current-role skills first
         return (skillMonths[b] || 0) - (skillMonths[a] || 0);
       });
-  }, [skills, skillMonths]);
+  }, [skills, skillMonths, currentRole]);
 
   const [showAll, setShowAll] = useState(false);
   const listWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -196,7 +196,7 @@ export default function Timeline({
     }
     // Ensure small non-zero height when nothing present
     setMaxHeight((h || 0) + 'px');
-  }, [showAll, currentMonth, sortedSkills]);
+  }, [showAll, currentMonth, sortedSkills, topN]);
 
   return (
     <div className="w-full py-4 rounded-lg shadow-sm">

@@ -4,10 +4,10 @@ import ptComponents from '@/lib/portableTextComponents';
 import CTAGroup from '../ui/CTA';
 
 type TwoColumnSectionProps = {
-  left?: any[];
-  right?: any[];
+  left?: unknown[];
+  right?: unknown[];
   reverse?: boolean;
-  ctas?: any[];
+  ctas?: unknown[];
 };
 
 const TwoColumnSection: React.FC<TwoColumnSectionProps> = ({ left, right, reverse, ctas }) => {
@@ -21,12 +21,12 @@ const TwoColumnSection: React.FC<TwoColumnSectionProps> = ({ left, right, revers
         >
           <div className="prose max-w-none">
             {left && left.length ? (
-              <PortableText value={left} components={ptComponents as any} />
+              <PortableText value={left} components={ptComponents as unknown} />
             ) : null}
           </div>
           <div className="prose max-w-none">
             {right && right.length ? (
-              <PortableText value={right} components={ptComponents as any} />
+              <PortableText value={right} components={ptComponents as unknown} />
             ) : null}
           </div>
         </div>

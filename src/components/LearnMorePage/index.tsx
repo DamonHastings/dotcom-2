@@ -14,15 +14,22 @@ type LearnMorePageProps = {
   title?: string;
   // Either pass a raw HTML string or Portable Text blocks.
   body?: string; // HTML string fallback
-  content?: any[]; // Portable Text blocks
+  content?: unknown[]; // Portable Text blocks
   ctas?: { label: string; href: string; variant?: 'primary' | 'secondary' | 'ghost' }[];
   // New flexible page fields
-  hero?: any;
-  sections?: any[];
+  hero?: unknown;
+  sections?: Section[];
   children?: React.ReactNode;
   className?: string;
   unoptimized?: boolean;
 };
+
+type Section = {
+  _type?: string;
+  [key: string]: unknown;
+};
+
+type CTA = { label: string; href: string; variant?: 'primary' | 'secondary' | 'ghost' };
 
 // Use shared `ptComponents` imported from `src/lib/portableTextComponents`
 
@@ -59,14 +66,14 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
           ) : null}
 
           {sections && sections.length
-            ? sections.map((s: any, i: number) => {
+            ? sections.map((s: Section, i: number) => {
                 if (s._type === 'richTextSection') {
                   return (
                     <RichTextSection
                       key={i}
-                      heading={s.heading}
-                      content={s.content}
-                      ctas={s.ctas}
+                      heading={s.heading as string}
+                      content={s.content as unknown[]}
+                      ctas={s.ctas as CTA[]}
                     />
                   );
                 }
@@ -76,8 +83,8 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
                       key={i}
                       left={s.left}
                       right={s.right}
-                      reverse={s.reverse}
-                      ctas={s.ctas}
+                      reverse={s.reverse as boolean}
+                      ctas={s.ctas as CTA[]}
                     />
                   );
                 }
@@ -85,12 +92,12 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
                   return (
                     <HeroSection
                       key={i}
-                      eyebrow={s.eyebrow}
-                      title={s.title}
-                      subtitle={s.subtitle}
+                      eyebrow={s.eyebrow as string}
+                      title={s.title as string}
+                      subtitle={s.subtitle as string}
                       backgroundImage={s.backgroundImage}
-                      imageAlt={s.imageAlt}
-                      ctas={s.ctas}
+                      imageAlt={s.imageAlt as string}
+                      ctas={s.ctas as CTA[]}
                     />
                   );
                 }
@@ -127,7 +134,7 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
               {children ? (
                 children
               ) : content && content.length ? (
-                <PortableText value={content} components={ptComponents as any} />
+                <PortableText value={content} components={ptComponents as unknown} />
               ) : body ? (
                 <div dangerouslySetInnerHTML={{ __html: body }} />
               ) : (

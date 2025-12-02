@@ -33,11 +33,13 @@ export default function SkillTimeline({
   autoplay = false,
   autoplayInterval = 800,
 }: Props) {
-  const source = experiences ?? timeline ?? [];
-  const sorted = useMemo(() => [...source].sort((a, b) => a.year - b.year), [source]);
+  const sorted = useMemo(() => {
+    const source = experiences ?? timeline ?? [];
+    return [...source].sort((a, b) => a.year - b.year);
+  }, [experiences, timeline]);
 
   // Extract technologies from entry supporting multiple common prop names.
-  function extractTechs(entry: any): string[] {
+  function extractTechs(entry: unknown): string[] {
     const names = [
       'technologies',
       'technology',
@@ -49,8 +51,9 @@ export default function SkillTimeline({
       'technologies_used',
     ];
     const out: string[] = [];
+    const obj = (entry as Record<string, unknown>) ?? {};
     for (const n of names) {
-      const v = entry?.[n];
+      const v = obj[n];
       if (!v) continue;
       if (Array.isArray(v)) {
         for (const it of v) if (typeof it === 'string') out.push(it.trim());
@@ -59,9 +62,9 @@ export default function SkillTimeline({
         v.split(',')
           .map((s) => s.trim())
           .forEach((s) => s && out.push(s));
-      } else if (typeof v === 'object') {
+      } else if (typeof v === 'object' && v !== null) {
         // object keys
-        Object.keys(v).forEach((k) => out.push(k));
+        Object.keys(v as Record<string, unknown>).forEach((k) => out.push(k));
       }
     }
     return Array.from(new Set(out));
@@ -72,7 +75,10 @@ export default function SkillTimeline({
   const skillPoints = useMemo(() => {
     const map: Record<string, { year: number; value: number }[]> = {};
     for (const e of sorted) {
-      const entrySkills: Record<string, number> = (e as any).skills ?? {};
+      const entrySkills = ((e as unknown as Record<string, unknown>).skills ?? {}) as Record<
+        string,
+        number
+      >;
       const techs = extractTechs(e);
       const names = new Set<string>([...Object.keys(entrySkills), ...techs]);
       for (const name of names) {
@@ -93,11 +99,9 @@ export default function SkillTimeline({
     return map;
   }, [sorted]);
 
-  const allSkills = useMemo(() => Object.keys(skillPoints).sort(), [skillPoints]);
-
   // Normalize entries to include explicit start/end years and a resolved title
   const normalizedEntries = useMemo(() => {
-    function parseYearField(v: any): number | null {
+    function parseYearField(v: unknown): number | null {
       if (typeof v === 'number' && !Number.isNaN(v)) return v;
       if (typeof v === 'string') {
         const m = v.match(/(19|20)\d{2}/);
@@ -109,13 +113,20 @@ export default function SkillTimeline({
     }
 
     return sorted.map((e) => {
+      const entryObj = e as unknown as Record<string, unknown>;
       const start =
-        parseYearField((e as any).startYear ?? (e as any).start ?? e.year) ?? e.year ?? 0;
-      const end = parseYearField((e as any).endYear ?? (e as any).end ?? (e as any).to) ?? start;
+        parseYearField(entryObj.startYear ?? entryObj.start ?? entryObj.year) ??
+        (entryObj.year as number) ??
+        0;
+      const end = parseYearField(entryObj.endYear ?? entryObj.end ?? entryObj.to) ?? start;
       const title =
-        (e as any).title || (e as any).role || (e as any).position || (e as any).jobTitle || '';
-      const skills = (e as any).skills ?? (e as any).skillLevels ?? {};
-      const techs = extractTechs(e as any);
+        (entryObj.title as string) ||
+        (entryObj.role as string) ||
+        (entryObj.position as string) ||
+        (entryObj.jobTitle as string) ||
+        '';
+      const skills = (entryObj.skills ?? entryObj.skillLevels ?? {}) as Record<string, number>;
+      const techs = extractTechs(e);
       return { original: e, start, end, title, skills, techs };
     });
   }, [sorted]);
@@ -151,7 +162,15 @@ export default function SkillTimeline({
   // time-series displayed values for skills (separate from interpolation helper)
   const [tsValues, setTsValues] = useState<Record<string, number>>({});
   const tsAnimRef = useRef<number | null>(null);
-  const prevActiveRef = useRef<any>(null);
+  type NormEntry = {
+    original: unknown;
+    start: number;
+    end: number;
+    title: string;
+    skills: Record<string, number>;
+    techs: string[];
+  };
+  const prevActiveRef = useRef<NormEntry | null>(null);
 
   // If `activeIndex` is provided (controlled), sync year with it.
   useEffect(() => {
@@ -209,7 +228,7 @@ export default function SkillTimeline({
       }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year, minYear, maxYear]);
+  }, [year, minYear, maxYear, onSelectedIndexChange, yearToIndex]);
 
   // Manage time-series values in a separate state. When the active entry changes
   // or the animated year moves, compute target values based on current and previous
@@ -238,7 +257,7 @@ export default function SkillTimeline({
 
     // also ensure existing tsValues keys remain (so bars don't disappear abruptly)
     Object.keys(tsValues).forEach((k) => {
-      if (!targets.hasOwnProperty(k)) targets[k] = tsValues[k];
+      if (!Object.prototype.hasOwnProperty.call(targets, k)) targets[k] = tsValues[k];
     });
 
     // cancel any existing animation
@@ -249,7 +268,7 @@ export default function SkillTimeline({
 
     const from = { ...tsValues };
     const duration = 400; // ms for value transitions
-    const startRef = { t: 0 } as any;
+    const startRef = { t: 0 } as { t?: number };
 
     const stepFn = (ts: number) => {
       if (!startRef.t) startRef.t = ts;
@@ -301,25 +320,28 @@ export default function SkillTimeline({
         intervalRef.current = null;
       }
     };
-  }, [playing, autoplayInterval, maxYear]);
+  }, [playing, autoplayInterval, maxYear, onSelectedIndexChange, yearToIndex]);
 
   useEffect(() => {
     setYear((y) => Math.max(minYear, Math.min(maxYear, y)));
   }, [minYear, maxYear]);
 
-  function yearToIndex(y: number) {
-    if (sorted.length === 0) return 0;
-    let best = 0;
-    let bestDiff = Math.abs(sorted[0].year - y);
-    for (let i = 1; i < sorted.length; i++) {
-      const d = Math.abs(sorted[i].year - y);
-      if (d < bestDiff) {
-        bestDiff = d;
-        best = i;
+  const yearToIndex = React.useCallback(
+    (y: number) => {
+      if (sorted.length === 0) return 0;
+      let best = 0;
+      let bestDiff = Math.abs(sorted[0].year - y);
+      for (let i = 1; i < sorted.length; i++) {
+        const d = Math.abs(sorted[i].year - y);
+        if (d < bestDiff) {
+          bestDiff = d;
+          best = i;
+        }
       }
-    }
-    return best;
-  }
+      return best;
+    },
+    [sorted]
+  );
 
   const goPrev = () => {
     const next = Math.max(minYear, year - 1);
@@ -400,7 +422,7 @@ export default function SkillTimeline({
   const entryTitle = (() => {
     const active = findActiveEntry(entryYear);
     if (!active) return '';
-    return active.title || (active.original && (active.original as any).title) || '';
+    return active.title || '';
   })();
 
   return (

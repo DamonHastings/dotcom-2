@@ -1,13 +1,17 @@
-import { IconGithub, IconLinkedin, IconTwitter, IconXTwitter } from './icons';
+import { IconGithub, IconLinkedin, IconXTwitter } from './icons';
 
-const SocialIcons = ({ social, className }: { social: any[]; className?: string }) => {
+const SocialIcons = ({
+  social,
+  className,
+}: {
+  social: Array<{ platform?: string; url?: string }>;
+  className?: string;
+}) => {
   return (
     <div className={className || 'flex space-x-6 justify-center md:justify-start'}>
       {social &&
-        social.map((soc: any) => {
-          {
-            console.log('Processing social:', soc);
-          }
+        social.map((soc) => {
+          if (!soc || !soc.platform) return null;
           if (soc.platform === 'github' && soc.url) {
             return (
               <a

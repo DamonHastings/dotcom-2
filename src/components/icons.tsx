@@ -1,7 +1,5 @@
 import React from 'react';
-import { FaGithub } from '@react-icons/all-files/fa/FaGithub';
-import { FaLinkedin } from '@react-icons/all-files/fa/FaLinkedin';
-import { FaTwitter } from '@react-icons/all-files/fa/FaTwitter';
+import { FaGithub, FaLinkedin, FaTwitter } from 'react-icons/fa';
 
 export const IconLinkedin = (props: React.SVGProps<SVGSVGElement>) => <FaLinkedin {...props} />;
 
@@ -22,6 +20,7 @@ export const IconOffice = (props: React.SVGProps<SVGSVGElement>) => (
     strokeWidth={1.5}
     stroke="currentColor"
     className="size-6"
+    {...props}
   >
     <path
       strokeLinecap="round"
@@ -39,6 +38,7 @@ export const IconFileLines = (props: React.SVGProps<SVGSVGElement>) => (
     strokeWidth={1.5}
     stroke="currentColor"
     className="size-6"
+    {...props}
   >
     <path
       strokeLinecap="round"
@@ -178,6 +178,7 @@ export const IconEnvelope = (props: React.SVGProps<SVGSVGElement>) => (
     strokeWidth={1.5}
     stroke="currentColor"
     className="size-6"
+    {...props}
   >
     <path
       strokeLinecap="round"
@@ -196,6 +197,7 @@ export const IconDuplicate = (props: React.SVGProps<SVGSVGElement>) => (
     strokeWidth={1.5}
     stroke="currentColor"
     className="size-6"
+    {...props}
   >
     <path
       strokeLinecap="round"

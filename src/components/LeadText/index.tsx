@@ -4,8 +4,8 @@ import { PortableText } from '@portabletext/react';
 import ptComponents from '../../lib/portableTextComponents';
 
 export interface LeadTextProps {
-  heading: string | any[];
-  children?: React.ReactNode | any[]; // paragraph / description (can be Portable Text)
+  heading: string | unknown[];
+  children?: React.ReactNode | unknown[]; // paragraph / description (can be Portable Text)
   className?: string;
   as?: keyof JSX.IntrinsicElements;
 }
@@ -24,7 +24,7 @@ export function LeadText({
     ...ptComponents,
     types: {
       // render any block as a heading element
-      block: ({ children: blockChildren }: any) => (
+      block: ({ children: blockChildren }: { children: React.ReactNode }) => (
         // Using the HeadingTag ensures correct semantics when the content is a single block
         <HeadingTag className="type-h2">{blockChildren}</HeadingTag>
       ),
@@ -50,7 +50,7 @@ export function LeadText({
       </div>
 
       {isBodyPortable ? (
-        <PortableText value={children as any} components={ptComponents} />
+        <PortableText value={children as unknown} components={ptComponents} />
       ) : (
         children && <p className="type-body">{children}</p>
       )}

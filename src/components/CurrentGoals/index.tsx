@@ -1,25 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { fetchSiteInfo, type SiteInfo } from '@/lib/sanity';
+import React from 'react';
 
 const CurrentGoals: React.FC = () => {
-  const [site, setSite] = useState<SiteInfo | null>(null);
-
-  useEffect(() => {
-    let cancelled = false;
-    fetchSiteInfo()
-      .then((data) => {
-        if (!cancelled) setSite(data);
-      })
-      .catch(() => {
-        if (!cancelled) setSite(null);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  const email = site?.contactEmail;
-
   return (
     <section className="max-w-6xl mx-auto mb-8 grid gap-4 grid-cols-12 bg-white p-6">
       <div className=" p-6 bg-card col-span-12 md:col-span-8">
@@ -36,13 +17,13 @@ const CurrentGoals: React.FC = () => {
 
       <div className="col-span-12 md:col-span-4">
         <div className="rounded-lg border p-6 bg-card">
-          <h4 className="text-lg font-semibold mb-3">Let's Discuss:</h4>
+          <h4 className="text-lg font-semibold mb-3">Let9s Discuss:</h4>
           <div>
             {[
               { label: 'Role Opportunities', variant: 'primary' },
               { label: 'Contract Opportunities', variant: 'secondary' },
               { label: 'Product Idea', variant: 'secondary' },
-              { label: "Whatever you'd like!", variant: 'tertiary' },
+              { label: 'Whatever you\u2019d like!', variant: 'tertiary' },
             ].map((item) => (
               <div
                 key={item.label}
@@ -57,13 +38,19 @@ const CurrentGoals: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const fn = (window as any).openContactModalWithTopic;
+                    const w =
+                      typeof window !== 'undefined'
+                        ? (window as unknown as {
+                            openContactModalWithTopic?: (topic?: string) => void;
+                          })
+                        : undefined;
+                    const fn = w?.openContactModalWithTopic;
                     // map human-friendly labels to the contact modal's subtitle options
                     const map: Record<string, string> = {
                       'Role Opportunities': 'Role Opportunity',
                       'Contract Opportunities': 'Contracting Opportunity',
                       'Product Idea': 'Project Idea',
-                      "Whatever you'd like!": 'General Inquiry',
+                      'Whatever you\u2019d like!': 'General Inquiry',
                     };
                     const topic = map[item.label] ?? item.label;
                     if (typeof fn === 'function') fn(topic);

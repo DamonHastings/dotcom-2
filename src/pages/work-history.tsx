@@ -1,13 +1,8 @@
 import Head from 'next/head';
-import HeroHeading from '@/components/HeroHeading';
-import LeadText from '@/components/LeadText';
-import CTAList from '@/components/CTAList';
-import CategoryTabs from '@/components/CategoryTabs';
-import ProjectCarousel from '@/components/ProjectCarousel';
+import Image from 'next/image';
 import ExperienceList from '@/components/ExperienceList';
 import CareerHighlights from '@/components/CareerHighlights';
 import CurrentGoals from '@/components/CurrentGoals';
-import SkillTimeline, { type TimelineEntry } from '@/components/SkillTimeline';
 import {
   fetchProjects,
   fetchSiteInfo,
@@ -18,8 +13,6 @@ import {
   type LandingPage,
 } from '@/lib/sanity';
 import Timeline from '@/components/Timeline';
-import { IconDuplicate, IconEnvelope, IconFileLines } from '@/components/icons';
-import Link from 'next/link';
 import ContactSection from '@/components/ContactSection';
 // Image import removed (unused)
 
@@ -80,62 +73,29 @@ export async function getStaticProps() {
   };
 }
 
-export default function WorkHistory({ projects, site, landing, experiences }: HomeProps) {
-  console.log('Hero Heading:', landing?.heroHeading);
-  const ptToPlain = (val: any) => {
+export default function WorkHistory({
+  site,
+  landing,
+  experiences,
+}: Pick<HomeProps, 'site' | 'landing' | 'experiences'>) {
+  const ptToPlain = (val: unknown) => {
     if (!val) return '';
     if (!Array.isArray(val)) return String(val);
-    return val
-      .map((block: any) =>
-        (block?.children || [])
-          .map((c: any) => c?.text ?? '')
+    return (val as unknown[])
+      .map((block) => {
+        const children = (block as Record<string, unknown>)?.children as unknown[] | undefined;
+        return (children ?? [])
+          .map((c) => String((c as Record<string, unknown>)?.text ?? ''))
           .filter(Boolean)
-          .join(' ')
-      )
+          .join(' ');
+      })
       .filter(Boolean)
       .join('\n\n');
   };
-  const heroLines = landing?.heroHeading?.length
-    ? landing.heroHeading
-    : site?.title
-    ? [site.title, site.subtitle || 'Digital Product', 'Experiments & Craft']
-    : ['Software Engineer.', 'Digital Artist.', 'Creative Producer.'];
-
-  const headingTagline = landing?.heroTagline || site?.subtitle || 'Product & Design at Panta';
-  const introSummary =
-    (Array.isArray(landing?.summary) ? ptToPlain(landing?.summary) : landing?.summary) ||
-    site?.summary ||
-    'A collection of work exploring interface design, interaction patterns, brand development, and the systems that support rapid experimentation.';
-  const primaryCtas = landing?.primaryCtas?.length
-    ? landing.primaryCtas
-    : [
-        // { label: 'Latest case study', href: '/projects/latest' },
-        // { label: 'Design system', href: '/projects/design-system' },
-        // { label: 'Get in touch', href: '/contact' },
-      ];
-  const secondaryCtas = landing?.secondaryCtas?.length
-    ? landing.secondaryCtas
-    : [
-        { label: 'About Panta', href: '/about' },
-        { label: 'All projects', href: '/projects' },
-      ];
-
-  const timeline: TimelineEntry[] = [
-    { year: 2015, title: 'Junior SWE', skills: { JavaScript: 40, React: 20, Design: 10 } },
-    { year: 2018, title: 'Mid SWE', skills: { JavaScript: 70, React: 60, Design: 25 } },
-    { year: 2022, title: 'Senior SWE', skills: { JavaScript: 90, React: 85, Design: 50 } },
-  ];
-  // Normalize experiences so 'technologies' is undefined instead of null (matches Timeline.Experience)
+  // trimmed unused page helpers (kept minimal for lint cleanliness)
   const timelineExperiences: TimelineExperience[] = experiences.map((e) => ({
     ...e,
     technologies: e.technologies ?? undefined,
-  }));
-  const featuredProjects = (
-    landing?.featuredProjects?.length ? landing.featuredProjects : projects
-  ).map((p) => ({
-    title: p.title,
-    subtitle: p.subtitle || 'Panta',
-    coverImage: p.coverImage,
   }));
 
   const heroImageUrl = landing?.heroImage ? urlFor(landing.heroImage).width(1200).url() : null;
@@ -163,12 +123,15 @@ export default function WorkHistory({ projects, site, landing, experiences }: Ho
           {heroImageUrl && (
             <div className="md:bottom-0 md:mx-auto top-10 md:top-5 col-span-12 md:col-span-4 grid grid-cols-2 md:grid-cols-1 md:gap-2 gap-6">
               <div className="col-span-1 md:col-span-2">
-                <img
-                  src={heroImageUrl}
-                  alt=""
-                  aria-hidden="true"
-                  className="opacity-90 rounded mb-2"
-                />
+                <div className="opacity-90 rounded mb-2 overflow-hidden">
+                  <Image
+                    src={heroImageUrl as string}
+                    alt=""
+                    width={800}
+                    height={600}
+                    className="rounded"
+                  />
+                </div>
                 <div className="sr-only">{heroImageAlt}</div>
               </div>
               <div className="text-xs md:mt-6 col-span-1 md:col-span-2 mt-2">
