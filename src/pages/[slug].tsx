@@ -13,6 +13,8 @@ type Props = {
   sections?: unknown[];
 };
 
+type Section = { _type?: string; [key: string]: unknown };
+
 export default function SlugPage({ title, imageSrc, imageAlt, content, hero, sections }: Props) {
   return (
     <>
@@ -26,7 +28,7 @@ export default function SlugPage({ title, imageSrc, imageAlt, content, hero, sec
           imageAlt={imageAlt}
           content={content}
           hero={hero}
-          sections={sections}
+          sections={sections as unknown as Section[]}
           unoptimized
         />
       </main>
@@ -43,31 +45,40 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
   const slug = String(context.params?.slug || '');
 
   try {
+    const coerceString = (v: unknown): string | null => (typeof v === 'string' ? v : null);
     // Prefer flexible pages
     const flexibleQuery = `*[_type == "flexiblePage" && slug.current == $slug][0]{title, slug, hero, sections}`;
     const flexible = (await client.fetch(flexibleQuery, { slug })) as unknown;
 
     if (flexible) {
-      const imageSrc = flexible?.hero?.backgroundImage
-        ? urlFor(flexible.hero.backgroundImage).width(1200).url()
+      const flexibleObj = flexible as unknown as { hero?: Record<string, unknown>; title?: string; sections?: unknown[] };
+      const imageSrc = flexibleObj?.hero?.backgroundImage
+        ? urlFor(flexibleObj.hero.backgroundImage as Record<string, unknown>).width(1200).url()
         : '/placeholder.png';
+      const imageAltStr = (() => {
+        const heroImgAlt = (flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt;
+        if (typeof heroImgAlt === 'string') return heroImgAlt;
+        if (typeof flexibleObj?.title === 'string') return flexibleObj.title;
+        return 'Page image';
+      })();
+
       return {
         props: {
-          title: flexible?.title ?? null,
+          title: coerceString(flexibleObj?.title),
           imageSrc,
-          imageAlt: flexible?.hero?.imageAlt || flexible?.title || 'Page image',
+          imageAlt: imageAltStr,
           content: [],
           hero: {
-            eyebrow: flexible.hero?.eyebrow ?? null,
-            title: flexible.hero?.title ?? null,
-            subtitle: flexible.hero?.subtitle ?? null,
-            backgroundImage: flexible.hero?.backgroundImage
-              ? urlFor(flexible.hero.backgroundImage).width(1200).url()
+            eyebrow: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.eyebrow),
+            title: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.title),
+            subtitle: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.subtitle),
+            backgroundImage: (flexibleObj.hero as Record<string, unknown> | undefined)?.backgroundImage
+              ? urlFor((flexibleObj.hero as Record<string, unknown>).backgroundImage as Record<string, unknown>).width(1200).url()
               : null,
-            imageAlt: flexible.hero?.imageAlt ?? null,
-            ctas: flexible.hero?.ctas || [],
+            imageAlt: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt),
+            ctas: (flexibleObj.hero as Record<string, unknown> | undefined)?.ctas || [],
           },
-          sections: flexible.sections || [],
+          sections: flexibleObj.sections || [],
         },
         revalidate: 60,
       };
@@ -81,37 +92,50 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     if (!doc) return { notFound: true };
 
     // Map discovered document types into props that `LearnMorePage` understands.
-    if (doc._type === 'learnMore') {
-      const imageSrc = doc?.image ? urlFor(doc.image).width(1200).url() : '/placeholder.png';
-      const imageAlt = doc?.imageAlt || doc?.title || 'Page image';
+    const docAny = doc as unknown as Record<string, unknown>;
+    if (docAny._type === 'learnMore') {
+      const imageSrc = docAny?.image ? urlFor(docAny.image).width(1200).url() : '/placeholder.png';
+      const imageAlt = (() => {
+        const imgAlt = docAny?.imageAlt as unknown;
+        if (typeof imgAlt === 'string') return imgAlt;
+        const title = docAny?.title as unknown;
+        if (typeof title === 'string') return title;
+        return 'Page image';
+      })();
       return {
         props: {
-          title: doc?.title ?? null,
+          title: coerceString(docAny?.title),
           imageSrc,
           imageAlt,
-          content: doc?.content || [],
+          content: (docAny?.content as unknown[]) || [],
         },
         revalidate: 60,
       };
     }
 
-    if (doc._type === 'project') {
-      const imageSrc = doc?.coverImage
-        ? urlFor(doc.coverImage).width(1200).url()
+    if (docAny._type === 'project') {
+      const imageSrc = docAny?.coverImage
+        ? urlFor(docAny.coverImage).width(1200).url()
         : '/placeholder.png';
-      const imageAlt = doc?.subtitle || doc?.title || 'Project image';
+      const imageAlt = (() => {
+        const subtitle = docAny?.subtitle as unknown;
+        if (typeof subtitle === 'string') return subtitle;
+        const title = docAny?.title as unknown;
+        if (typeof title === 'string') return title;
+        return 'Project image';
+      })();
       // Convert simple text description into a minimal Portable Text block if necessary
-      const content = doc?.description
+      const content = docAny?.description
         ? [
             {
               _type: 'block',
-              children: [{ _type: 'span', text: String(doc.description) }],
+              children: [{ _type: 'span', text: String(docAny.description) }],
             },
           ]
         : [];
       return {
         props: {
-          title: doc?.title ?? null,
+          title: coerceString(docAny?.title),
           imageSrc,
           imageAlt,
           content,

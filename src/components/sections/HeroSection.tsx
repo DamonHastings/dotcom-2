@@ -6,7 +6,7 @@ type HeroSectionProps = {
   eyebrow?: string;
   title?: string;
   subtitle?: string;
-  backgroundImage?: unknown;
+  backgroundImage?: string | unknown;
   imageAlt?: string;
   ctas?: unknown[];
   unoptimized?: boolean;
@@ -29,7 +29,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             {backgroundImage ? (
               <div className="w-full h-full rounded overflow-hidden shadow-sm">
                 <Image
-                  src={backgroundImage}
+                  src={backgroundImage as string}
                   alt={imageAlt}
                   width={800}
                   height={800}
@@ -40,7 +40,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({
             ) : null}
             {ctas && ctas.length ? (
               <div className="mt-4">
-                <CTAGroup ctas={ctas} />
+                {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                <CTAGroup ctas={ctas as any} />
               </div>
             ) : null}
           </div>

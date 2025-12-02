@@ -86,7 +86,8 @@ export default function Landing() {
   const Summary = () => {
     return summary ? (
       <div className="mb-4 prose max-w-none">
-        <PortableText value={summary} />
+        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+        <PortableText value={summary as any} />
       </div>
     ) : (
       <></>
@@ -109,7 +110,8 @@ export default function Landing() {
             <div className="px-6">
               <Title />
               <HeroHeading />
-              <SocialIcons social={social} className="flex gap-6 justify-start mb-4" />
+              {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+              <SocialIcons social={social as any} className="flex gap-6 justify-start mb-4" />
               <div className="md:block hidden mt-10">
                 <ContactSection contactEmail={contactEmail} resumeUrl={resumeUrl} />
               </div>

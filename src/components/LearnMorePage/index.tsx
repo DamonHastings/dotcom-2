@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import Image from 'next/image';
 import { PortableText } from '@portabletext/react';
@@ -46,6 +47,7 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
   hero,
   sections,
 }) => {
+  const heroObj = hero as Record<string, unknown> | undefined;
   // If caller provided a flexible `hero`/`sections` use those, otherwise fall back to legacy props
   const hasFlexible = !!(hero || (sections && sections.length));
 
@@ -55,12 +57,12 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
         <>
           {hero ? (
             <HeroSection
-              eyebrow={hero.eyebrow}
-              title={hero.title}
-              subtitle={hero.subtitle}
-              backgroundImage={hero.backgroundImage}
-              imageAlt={hero.imageAlt}
-              ctas={hero.ctas}
+              eyebrow={heroObj?.eyebrow as string}
+              title={heroObj?.title as string}
+              subtitle={heroObj?.subtitle as string}
+              backgroundImage={heroObj?.backgroundImage as string}
+              imageAlt={heroObj?.imageAlt as string}
+              ctas={heroObj?.ctas as any}
               unoptimized={unoptimized}
             />
           ) : null}
@@ -81,8 +83,8 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
                   return (
                     <TwoColumnSection
                       key={i}
-                      left={s.left}
-                      right={s.right}
+                      left={s.left as unknown[]}
+                      right={s.right as unknown[]}
                       reverse={s.reverse as boolean}
                       ctas={s.ctas as CTA[]}
                     />
@@ -134,7 +136,7 @@ const LearnMorePage: React.FC<LearnMorePageProps> = ({
               {children ? (
                 children
               ) : content && content.length ? (
-                <PortableText value={content} components={ptComponents as unknown} />
+                <PortableText value={content as any} components={ptComponents as any} />
               ) : body ? (
                 <div dangerouslySetInnerHTML={{ __html: body }} />
               ) : (

@@ -13,6 +13,8 @@ type Props = {
   sections?: unknown[];
 };
 
+type Section = { _type?: string; [key: string]: unknown };
+
 const LearnMore = ({ imageSrc, imageAlt, content, title, hero, sections }: Props) => {
   // Debug: log server-side fetch result (kept outside JSX)
   // eslint-disable-next-line no-console
@@ -26,7 +28,7 @@ const LearnMore = ({ imageSrc, imageAlt, content, title, hero, sections }: Props
         imageAlt={imageAlt}
         content={content}
         hero={hero}
-        sections={sections}
+        sections={sections as unknown as Section[]}
         unoptimized
       />
     </main>
@@ -35,32 +37,41 @@ const LearnMore = ({ imageSrc, imageAlt, content, title, hero, sections }: Props
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   try {
+    const coerceString = (v: unknown): string | null => (typeof v === 'string' ? v : null);
     // Try to fetch a flexiblePage with slug "learn-more" first
     const flexibleQuery = `*[_type == "flexiblePage" && slug.current == "learn-more"][0]{title, slug, hero, sections}`;
     const flexible = (await client.fetch(flexibleQuery)) as unknown;
 
     if (flexible) {
-      const imageSrc = flexible?.hero?.backgroundImage
-        ? urlFor(flexible.hero.backgroundImage).width(1200).url()
+      const flexibleObj = flexible as unknown as { hero?: Record<string, unknown>; title?: string; sections?: unknown[] };
+      const imageSrc = flexibleObj?.hero?.backgroundImage
+        ? urlFor(flexibleObj.hero.backgroundImage as Record<string, unknown>).width(1200).url()
         : '/placeholder.png';
+      const imageAltStr = (() => {
+        const heroImgAlt = (flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt;
+        if (typeof heroImgAlt === 'string') return heroImgAlt;
+        if (typeof flexibleObj?.title === 'string') return flexibleObj.title;
+        return 'Learn more image';
+      })();
+
       return {
         props: {
-          title: flexible?.title ?? null,
+          title: coerceString(flexibleObj?.title),
           imageSrc,
-          imageAlt: flexible?.hero?.imageAlt || flexible?.title || 'Learn more image',
+          imageAlt: imageAltStr,
           content: [],
           // pass flexible fields for the component to render
           hero: {
-            eyebrow: flexible.hero?.eyebrow ?? null,
-            title: flexible.hero?.title ?? null,
-            subtitle: flexible.hero?.subtitle ?? null,
-            backgroundImage: flexible.hero?.backgroundImage
-              ? urlFor(flexible.hero.backgroundImage).width(1200).url()
+            eyebrow: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.eyebrow),
+            title: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.title),
+            subtitle: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.subtitle),
+            backgroundImage: (flexibleObj.hero as Record<string, unknown> | undefined)?.backgroundImage
+              ? urlFor((flexibleObj.hero as Record<string, unknown>).backgroundImage as Record<string, unknown>).width(1200).url()
               : null,
-            imageAlt: flexible.hero?.imageAlt ?? null,
-            ctas: flexible.hero?.ctas || [],
+            imageAlt: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt),
+            ctas: (flexibleObj.hero as Record<string, unknown> | undefined)?.ctas || [],
           },
-          sections: flexible.sections || [],
+          sections: flexibleObj.sections || [],
         },
         revalidate: 60,
       };
@@ -69,16 +80,19 @@ export const getStaticProps: GetStaticProps<Props> = async () => {
     // Fallback to legacy learnMore document
     const query = `*[_type == "learnMore"][0]{title, image, imageAlt, content}`;
     const data = (await client.fetch(query)) as unknown;
+    const dataObj = data as unknown as Record<string, unknown>;
 
-    const imageSrc = data?.image ? urlFor(data.image).width(1200).url() : '/placeholder.png';
-    const imageAlt = data?.imageAlt || data?.title || 'Learn more image';
+    const imageSrc = (dataObj?.image as Record<string, unknown> | undefined)
+      ? urlFor(dataObj.image as Record<string, unknown>).width(1200).url()
+      : '/placeholder.png';
+    const imageAlt = (dataObj?.imageAlt as string | undefined) || (dataObj?.title as string | undefined) || 'Learn more image';
 
     return {
-      props: {
-        title: data?.title ?? null,
+        props: {
+        title: (dataObj?.title as string | null) ?? null,
         imageSrc,
         imageAlt,
-        content: data?.content || [],
+        content: (dataObj?.content as unknown[] | undefined) || [],
       },
       revalidate: 60,
     };

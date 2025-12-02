@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { PortableText } from '@portabletext/react';
 import { type Experience } from '@/lib/sanity';
+import type { TimelineEntry } from '@/components/SkillTimeline';
 import Timeline from '@/components/Timeline';
 import ptComponents from '@/lib/portableTextComponents';
 
 interface Props {
   experiences: Experience[];
+  /** optional fallback timeline entries for list-level timeline previews */
+  timeline?: TimelineEntry[];
   /** Controlled selected index (optional). If provided, ExperienceList will notify via onSelectedIndexChange. */
   selectedIndex?: number;
   onSelectedIndexChange?: (i: number) => void;

@@ -3,7 +3,7 @@ import React from 'react';
 // Lightweight runtime-only component — keep types out of the file so parsers
 // that don't fully support TSX function parameter annotations can still parse it.
 // Expected shape for `items`: [{ id?, period, company, role?, summary? }]
-function SummaryTimeline(props) {
+function SummaryTimeline(props: { items?: unknown[] }) {
   const items = props && Array.isArray(props.items) ? props.items : props.items ? props.items : [];
   const list = items || [];
   return (
@@ -13,12 +13,13 @@ function SummaryTimeline(props) {
 
       <ul className="space-y-12">
         {list.map((it) => {
-          const period = it.period == null ? '' : String(it.period);
-          const company = it.company == null ? '' : String(it.company);
-          const role = it.role == null ? '' : String(it.role);
-          const summary = it.summary == null ? '' : String(it.summary);
+          const entry = it as Record<string, unknown>;
+          const period = entry.period == null ? '' : String(entry.period);
+          const company = entry.company == null ? '' : String(entry.company);
+          const role = entry.role == null ? '' : String(entry.role);
+          const summary = entry.summary == null ? '' : String(entry.summary);
           return (
-            <li key={it.id ?? `${company}-${period}`} className="flex items-start">
+            <li key={(entry.id as string) ?? `${company}-${period}`} className="flex items-start">
               <div className="flex-1 pr-6 text-right">
                 <div className="text-sm text-gray-400 font-semibold">{period}</div>
                 <div className="text-base font-medium text-white">{company}</div>

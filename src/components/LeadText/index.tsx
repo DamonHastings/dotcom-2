@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import type { JSX } from 'react';
 import { PortableText } from '@portabletext/react';
@@ -36,7 +37,7 @@ export function LeadText({
       <div className="relative max-w-xl">
         <div className="bg-orange-200 p-6 mb-6">
           {isHeadingPortable ? (
-            <PortableText value={heading} components={headingComponents} />
+            <PortableText value={heading as any} components={headingComponents as any} />
           ) : (
             <HeadingTag className="type-h2">{heading}</HeadingTag>
           )}
@@ -50,7 +51,7 @@ export function LeadText({
       </div>
 
       {isBodyPortable ? (
-        <PortableText value={children as unknown} components={ptComponents} />
+        <PortableText value={children as any} components={ptComponents} />
       ) : (
         children && <p className="type-body">{children}</p>
       )}

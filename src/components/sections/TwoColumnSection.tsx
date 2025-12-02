@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { PortableText } from '@portabletext/react';
 import ptComponents from '@/lib/portableTextComponents';
@@ -21,18 +22,18 @@ const TwoColumnSection: React.FC<TwoColumnSectionProps> = ({ left, right, revers
         >
           <div className="prose max-w-none">
             {left && left.length ? (
-              <PortableText value={left} components={ptComponents as unknown} />
+              <PortableText value={left as any} components={ptComponents as any} />
             ) : null}
           </div>
           <div className="prose max-w-none">
             {right && right.length ? (
-              <PortableText value={right} components={ptComponents as unknown} />
+              <PortableText value={right as any} components={ptComponents as any} />
             ) : null}
           </div>
         </div>
         {ctas && ctas.length ? (
           <div className="mt-6">
-            <CTAGroup ctas={ctas} />
+            <CTAGroup ctas={ctas as any} />
           </div>
         ) : null}
       </div>

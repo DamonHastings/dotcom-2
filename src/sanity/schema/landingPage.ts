@@ -41,7 +41,7 @@ export default defineType({
       title: 'Primary CTAs',
       type: 'array',
       of: [
-        defineType({
+        {
           name: 'landingPrimaryCta',
           title: 'Primary CTA',
           type: 'object',
@@ -49,7 +49,7 @@ export default defineType({
             defineField({ name: 'label', type: 'string', validation: (Rule) => Rule.required() }),
             defineField({ name: 'href', type: 'string', validation: (Rule) => Rule.required() }),
           ],
-        }),
+        },
       ],
     }),
     defineField({
@@ -57,7 +57,7 @@ export default defineType({
       title: 'Secondary CTAs',
       type: 'array',
       of: [
-        defineType({
+        {
           name: 'landingSecondaryCta',
           title: 'Secondary CTA',
           type: 'object',
@@ -65,7 +65,7 @@ export default defineType({
             defineField({ name: 'label', type: 'string', validation: (Rule) => Rule.required() }),
             defineField({ name: 'href', type: 'string', validation: (Rule) => Rule.required() }),
           ],
-        }),
+        },
       ],
     }),
     defineField({

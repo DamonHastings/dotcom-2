@@ -148,6 +148,23 @@ export default function SkillTimeline({
   const minYear = years[0] ?? 0;
   const maxYear = years[years.length - 1] ?? minYear;
 
+  const yearToIndex = React.useCallback(
+    (y: number) => {
+      if (sorted.length === 0) return 0;
+      let best = 0;
+      let bestDiff = Math.abs(sorted[0].year - y);
+      for (let i = 1; i < sorted.length; i++) {
+        const d = Math.abs(sorted[i].year - y);
+        if (d < bestDiff) {
+          bestDiff = d;
+          best = i;
+        }
+      }
+      return best;
+    },
+    [sorted]
+  );
+
   const defaultYear =
     typeof initialIndex === 'number' ? sorted[initialIndex]?.year ?? maxYear : maxYear;
   const [year, setYear] = useState<number>(defaultYear); // target year
@@ -325,23 +342,6 @@ export default function SkillTimeline({
   useEffect(() => {
     setYear((y) => Math.max(minYear, Math.min(maxYear, y)));
   }, [minYear, maxYear]);
-
-  const yearToIndex = React.useCallback(
-    (y: number) => {
-      if (sorted.length === 0) return 0;
-      let best = 0;
-      let bestDiff = Math.abs(sorted[0].year - y);
-      for (let i = 1; i < sorted.length; i++) {
-        const d = Math.abs(sorted[i].year - y);
-        if (d < bestDiff) {
-          bestDiff = d;
-          best = i;
-        }
-      }
-      return best;
-    },
-    [sorted]
-  );
 
   const goPrev = () => {
     const next = Math.max(minYear, year - 1);

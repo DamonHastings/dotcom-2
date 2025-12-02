@@ -7,7 +7,7 @@ export default {
   component: Timeline,
 } as Meta;
 
-const Template: Story = (args) => (
+const Template: Story<React.ComponentProps<typeof Timeline>> = (args) => (
   <div style={{ maxWidth: 720 }}>
     <Timeline {...args} />
   </div>

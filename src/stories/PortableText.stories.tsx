@@ -45,6 +45,7 @@ const sampleBlocks: unknown[] = [
 
 export const PortableTextPreview = () => (
   <div style={{ padding: 24 }}>
-    <PortableText value={sampleBlocks} components={ptComponents as unknown} />
+    {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+    <PortableText value={sampleBlocks as any} components={ptComponents as any} />
   </div>
 );

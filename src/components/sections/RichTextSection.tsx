@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from 'react';
 import { PortableText } from '@portabletext/react';
 import ptComponents from '@/lib/portableTextComponents';
@@ -16,13 +17,13 @@ const RichTextSection: React.FC<RichTextSectionProps> = ({ heading, content, cta
         <div className="prose max-w-none">
           {heading ? <h2 className="text-2xl font-semibold mb-4">{heading}</h2> : null}
           {content && content.length ? (
-            <PortableText value={content} components={ptComponents as unknown} />
+            <PortableText value={content as any} components={ptComponents as any} />
           ) : (
             <p className="text-sm text-muted-foreground">No content yet — edit in the Studio.</p>
           )}
           {ctas && ctas.length ? (
             <div className="mt-6">
-              <CTAGroup ctas={ctas} />
+              <CTAGroup ctas={ctas as any} />
             </div>
           ) : null}
         </div>

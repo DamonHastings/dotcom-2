@@ -14,19 +14,8 @@ type BioProps = {
   }[];
 };
 
-export default async function Bio() {
-  const experiences: Experience[] = await fetchExperiences();
-  const timelineItems: {
-    period: string;
-    company: string;
-    role: string;
-    summary: string;
-  }[] = experiences.map((e) => ({
-    period: formatPeriod(e),
-    company: e.company || '—',
-    role: e.role ?? '',
-    summary: e.resume?.shortSummary ?? e.summary ?? '',
-  }));
+export default function Bio({ timelineItems: timelineItemsProp }: BioProps) {
+  const timelineItems = timelineItemsProp || [];
   const fallbackItems = [
     {
       period: '2021 - 2025',

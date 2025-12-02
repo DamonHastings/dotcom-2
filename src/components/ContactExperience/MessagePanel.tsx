@@ -18,6 +18,8 @@ type Props = {
   }) => void;
   onSchedule?: (payload: SchedulePayload) => void;
   onCancel?: () => void;
+  /** label for the send button (keeps existing callers working) */
+  emailLabel?: string;
 };
 
 export default function MessagePanel({
@@ -26,6 +28,7 @@ export default function MessagePanel({
   initialSubtitle,
   onSend,
   onCancel,
+  emailLabel,
 }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -135,7 +138,7 @@ export default function MessagePanel({
             }
             className="px-4 py-2 bg-emerald-500 text-white rounded-md font-semibold"
           >
-            Send
+            {emailLabel ?? 'Send'}
           </button>
         </div>
       </div>
