@@ -42,6 +42,21 @@ export default function MessagePanel({
   const [contactByEmail, setContactByEmail] = useState(true);
   const [selectedSubtitle, setSelectedSubtitle] = useState(initialSubtitle ?? subtitleOptions[0]);
 
+  // Update selected subtitle when the parent changes `initialSubtitle`.
+  // This allows opening the dialog with a pre-selected topic after mount.
+  React.useEffect(() => {
+    if (initialSubtitle) {
+      // only accept the incoming subtitle if it matches one of the options
+      if (subtitleOptions && subtitleOptions.includes(initialSubtitle)) {
+        setSelectedSubtitle(initialSubtitle);
+      } else {
+        setSelectedSubtitle(subtitleOptions[0]);
+      }
+    } else {
+      setSelectedSubtitle(subtitleOptions[0]);
+    }
+  }, [initialSubtitle, subtitleOptions]);
+
   return (
     <div className="rounded-md bg-white shadow-sm max-w-xl">
       <div className="grid grid-cols-5 md:grid-cols-4 gap-20">

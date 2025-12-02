@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { fetchSiteInfo, type SiteInfo } from '@/lib/sanity';
-import ArrowLink from '@/components/ArrowLink';
 
 const CurrentGoals: React.FC = () => {
   const [site, setSite] = useState<SiteInfo | null>(null);
@@ -39,18 +37,48 @@ const CurrentGoals: React.FC = () => {
       <div className="col-span-12 md:col-span-4">
         <div className="rounded-lg border p-6 bg-card">
           <h4 className="text-lg font-semibold mb-3">Let's Discuss:</h4>
-          <ArrowLink variant="primary" href="/contact?topic=Full-time%20Roles">
-            Full-time Roles
-          </ArrowLink>
-          <ArrowLink variant="secondary" href="/contact?topic=Contract%20Opportunities">
-            Contract Opportunities
-          </ArrowLink>
-          <ArrowLink variant="secondary" href="/contact?topic=Product%20Ideas">
-            Product Ideas
-          </ArrowLink>
-          <ArrowLink variant="tertiary" href="/contact?topic=Whatever%20you%27d%20like%21">
-            Whatever you'd like!
-          </ArrowLink>
+          <div>
+            {[
+              { label: 'Role Opportunities', variant: 'primary' },
+              { label: 'Contract Opportunities', variant: 'secondary' },
+              { label: 'Product Idea', variant: 'secondary' },
+              { label: "Whatever you'd like!", variant: 'tertiary' },
+            ].map((item) => (
+              <div
+                key={item.label}
+                className={`mb-4 p-2 sm:p-3 px-4 rounded group transition-transform duration-150 ease-out md:hover:-translate-y-1 ${
+                  item.variant === 'primary'
+                    ? 'bg-gray-200'
+                    : item.variant === 'secondary'
+                    ? 'bg-gray-100'
+                    : 'bg-transparent border border-gray-200'
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() => {
+                    const fn = (window as any).openContactModalWithTopic;
+                    // map human-friendly labels to the contact modal's subtitle options
+                    const map: Record<string, string> = {
+                      'Role Opportunities': 'Role Opportunity',
+                      'Contract Opportunities': 'Contracting Opportunity',
+                      'Product Idea': 'Project Idea',
+                      "Whatever you'd like!": 'General Inquiry',
+                    };
+                    const topic = map[item.label] ?? item.label;
+                    if (typeof fn === 'function') fn(topic);
+                    else window.location.href = `/contact?topic=${encodeURIComponent(topic)}`;
+                  }}
+                  className="flex items-center gap-1 text-md md:text-base font-bold w-full text-left"
+                >
+                  <span className="transition-colors">{item.label}</span>
+                  <span aria-hidden className="transition-transform group-hover:translate-x-1 ml-1">
+                    →
+                  </span>
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

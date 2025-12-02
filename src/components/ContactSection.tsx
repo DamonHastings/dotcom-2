@@ -10,8 +10,25 @@ type Props = {
 
 export default function ContactSection({ contactEmail, resumeUrl }: Props) {
   const [currentPath, setCurrentPath] = React.useState<string | null>(null);
+  const [modalTopic, setModalTopic] = React.useState<string | undefined>(undefined);
   React.useEffect(() => {
     if (typeof window !== 'undefined') setCurrentPath(window.location.pathname);
+  }, []);
+
+  React.useEffect(() => {
+    // expose a global helper so other components (like CurrentGoals) can open
+    // the contact dialog with a pre-selected topic.
+    if (typeof window !== 'undefined') {
+      (window as any).openContactModalWithTopic = (topic?: string) => {
+        setModalTopic(topic);
+        const dlg = document.getElementById('contactModal') as HTMLDialogElement | null;
+        if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
+      };
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') delete (window as any).openContactModalWithTopic;
+    };
   }, []);
 
   /**
@@ -65,9 +82,10 @@ export default function ContactSection({ contactEmail, resumeUrl }: Props) {
       ) : null}
       <button
         type="button"
-        onClick={() =>
-          (document.getElementById('contactModal') as HTMLDialogElement | null)?.showModal()
-        }
+        onClick={() => {
+          setModalTopic(undefined);
+          (document.getElementById('contactModal') as HTMLDialogElement | null)?.showModal();
+        }}
         className="inline-block mb-3 text-sm"
       >
         <div className="flex items-center space-x-2 text-indigo-600 hover:underline">
@@ -89,6 +107,7 @@ export default function ContactSection({ contactEmail, resumeUrl }: Props) {
             'Project Idea',
             'General Inquiry',
           ]}
+          initialSubtitle={modalTopic}
           emailLabel="Send a message"
           onCancel={() =>
             (document.getElementById('contactModal') as HTMLDialogElement | null)?.close()
