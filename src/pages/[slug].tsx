@@ -51,9 +51,15 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
     const flexible = (await client.fetch(flexibleQuery, { slug })) as unknown;
 
     if (flexible) {
-      const flexibleObj = flexible as unknown as { hero?: Record<string, unknown>; title?: string; sections?: unknown[] };
+      const flexibleObj = flexible as unknown as {
+        hero?: Record<string, unknown>;
+        title?: string;
+        sections?: unknown[];
+      };
       const imageSrc = flexibleObj?.hero?.backgroundImage
-        ? urlFor(flexibleObj.hero.backgroundImage as Record<string, unknown>).width(1200).url()
+        ? urlFor(flexibleObj.hero.backgroundImage as Record<string, unknown>)
+            .width(1200)
+            .url()
         : '/placeholder.png';
       const imageAltStr = (() => {
         const heroImgAlt = (flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt;
@@ -69,13 +75,27 @@ export const getStaticProps: GetStaticProps<Props> = async (context) => {
           imageAlt: imageAltStr,
           content: [],
           hero: {
-            eyebrow: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.eyebrow),
+            eyebrow: coerceString(
+              (flexibleObj.hero as Record<string, unknown> | undefined)?.eyebrow
+            ),
             title: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.title),
-            subtitle: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.subtitle),
-            backgroundImage: (flexibleObj.hero as Record<string, unknown> | undefined)?.backgroundImage
-              ? urlFor((flexibleObj.hero as Record<string, unknown>).backgroundImage as Record<string, unknown>).width(1200).url()
+            subtitle: coerceString(
+              (flexibleObj.hero as Record<string, unknown> | undefined)?.subtitle
+            ),
+            backgroundImage: (flexibleObj.hero as Record<string, unknown> | undefined)
+              ?.backgroundImage
+              ? urlFor(
+                  (flexibleObj.hero as Record<string, unknown>).backgroundImage as Record<
+                    string,
+                    unknown
+                  >
+                )
+                  .width(1200)
+                  .url()
               : null,
-            imageAlt: coerceString((flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt),
+            imageAlt: coerceString(
+              (flexibleObj.hero as Record<string, unknown> | undefined)?.imageAlt
+            ),
             ctas: (flexibleObj.hero as Record<string, unknown> | undefined)?.ctas || [],
           },
           sections: flexibleObj.sections || [],
