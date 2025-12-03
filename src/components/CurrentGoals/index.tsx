@@ -8,14 +8,15 @@ const CurrentGoals: React.FC = () => {
           Open to full-time roles, project-based contracts, and mission-driven collaborations.
         </h3>
         <p className="text-muted-foreground mb-4">
-          I\u2019m currently focused on building products that bring new capability to ambitious
-          people. Open to senior engineering roles, contract work, and collaborative projects.
+          {
+            "I'm currently focused on building products that bring new capability to ambitious people. Open to senior engineering roles, contract work, and collaborative projects."
+          }
         </p>
       </div>
 
       <div className="col-span-12 md:col-span-4">
         <div className="rounded-lg border p-6 bg-card">
-          <h4 className="text-lg font-semibold mb-3">Let's Discuss:</h4>
+          <h4 className="text-lg font-semibold mb-3">{"Let's Discuss:"}</h4>
           <div>
             {[
               { label: 'Role Opportunities', variant: 'primary' },
