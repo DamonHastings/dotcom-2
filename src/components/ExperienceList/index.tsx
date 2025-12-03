@@ -81,7 +81,7 @@ export default function ExperienceList(props: Props) {
                   setCardIndex(idx);
                 }}
               >
-                <div className="col-span-12 md:col-span-7 mt-4">
+                <div className="col-span-12 md:col-span-7">
                   <div>
                     <div className="relative">
                       {/* {exp.duration ? (

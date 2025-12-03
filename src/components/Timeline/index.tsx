@@ -33,7 +33,7 @@ function monthIndexToDate(monthIndex: number) {
 
 export default function Timeline({
   experiences,
-  stepMs = 160,
+  stepMs = 40,
   startAtEnd = false,
   topN = 5,
 }: TimelineProps) {
@@ -85,7 +85,7 @@ export default function Timeline({
       const delta = now - lastTickRef.current;
       if (delta >= stepMs) {
         setCurrentMonth((m) => {
-          const next = m + 3;
+          const next = m + 1;
           if (next > maxMonth) {
             setPlaying(false);
             return maxMonth;
@@ -198,6 +198,31 @@ export default function Timeline({
     setMaxHeight((h || 0) + 'px');
   }, [showAll, currentMonth, sortedSkills, topN]);
 
+  // Keyboard support for the slider: arrow keys, page/home/end, with modifiers
+  function handleSliderKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    let handled = false;
+    // Arrow keys move by 1 month, Shift+Arrow moves by 3 months
+    if (e.key === 'Home') {
+      setCurrentMonth(minMonth);
+      handled = true;
+    } else if (e.key === 'End') {
+      setCurrentMonth(maxMonth);
+      handled = true;
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+      const step = e.shiftKey ? 3 : 1;
+      const delta = e.key === 'ArrowRight' ? step : -step;
+      setCurrentMonth((m) => Math.max(minMonth, Math.min(maxMonth, m + delta)));
+      handled = true;
+    } else if (e.key === 'PageUp' || e.key === 'PageDown') {
+      const step = e.shiftKey ? 24 : 12; // year or two-year jumps
+      const delta = e.key === 'PageUp' ? step : -step;
+      setCurrentMonth((m) => Math.max(minMonth, Math.min(maxMonth, m + delta)));
+      handled = true;
+    }
+
+    if (handled) e.preventDefault();
+  }
+
   return (
     <div className="w-full py-4 rounded-lg shadow-sm">
       <div className="mb-3 flex items-start justify-between">
@@ -309,14 +334,33 @@ export default function Timeline({
 
       {/* Controls at bottom */}
       <div className="mt-4 space-y-2">
-        <input
-          type="range"
-          min={minMonth}
-          max={maxMonth}
-          value={currentMonth}
-          onChange={(e) => setCurrentMonth(Number(e.target.value))}
-          className="w-full"
-        />
+        <div style={{ position: 'relative' }}>
+          <input
+            type="range"
+            min={minMonth}
+            max={maxMonth}
+            step={1}
+            value={currentMonth}
+            onChange={(e) => setCurrentMonth(Number(e.target.value))}
+            onKeyDown={handleSliderKeyDown}
+            className="w-full timeline-slider"
+            aria-label="Navigate timeline"
+          />
+
+          {/* floating date callout above the thumb */}
+          {(() => {
+            const denom = Math.max(1, maxMonth - minMonth);
+            const t = (currentMonth - minMonth) / denom;
+            const left = `${t * 100}%`;
+            return (
+              <div className="absolute top-6" style={{ left, transform: 'translateX(-50%)' }}>
+                <div className="px-3 py-1 bg-white border rounded shadow-sm text-sm font-medium">
+                  {monthIndexToDate(currentMonth).getFullYear()}
+                </div>
+              </div>
+            );
+          })()}
+        </div>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -330,6 +374,12 @@ export default function Timeline({
           </div>
         </div>
       </div>
+      <style>{`
+        .timeline-slider { -webkit-appearance: none; appearance: none; height: 8px; background: #f5f5f5; border-radius: 999px; }
+        .timeline-slider:focus { outline: none; }
+        .timeline-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: #06b6d4; border: 4px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.12); margin-top: 0px; }
+        .timeline-slider::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; z-index:999; background: #06b6d4; border: 4px solid white; box-shadow: 0 2px 6px rgba(0,0,0,0.12); }
+      `}</style>
     </div>
   );
 }

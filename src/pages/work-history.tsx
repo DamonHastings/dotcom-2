@@ -144,7 +144,7 @@ export default function WorkHistory({
             <h2 className="text-xl font-medium">
               15 years of Customer-Focused Engineering and Design
             </h2>
-            <Timeline experiences={timelineExperiences} startAtEnd topN={10} stepMs={500} />
+            <Timeline experiences={timelineExperiences} startAtEnd topN={10} stepMs={100} />
           </div>
           <div className="col-span-12 md:col-span-4 space-y-4 space-x- z-10"></div>
           {/* Heading overlay — use relative positioning on small screens and absolute on md */}
