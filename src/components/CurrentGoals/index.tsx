@@ -15,7 +15,7 @@ const CurrentGoals: React.FC = () => {
 
       <div className="col-span-12 md:col-span-4">
         <div className="rounded-lg border p-6 bg-card">
-          <h4 className="text-lg font-semibold mb-3">Let9s Discuss:</h4>
+          <h4 className="text-lg font-semibold mb-3">Let's Discuss:</h4>
           <div>
             {[
               { label: 'Role Opportunities', variant: 'primary' },

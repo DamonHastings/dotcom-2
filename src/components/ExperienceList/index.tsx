@@ -81,13 +81,13 @@ export default function ExperienceList(props: Props) {
                   setCardIndex(idx);
                 }}
               >
-                <div className="col-span-12 md:col-span-8">
+                <div className="col-span-12 md:col-span-8 mt-4">
                   <div>
                     <div className="relative">
                       {exp.duration ? (
-                        <div className="absolute top-0 right-0 mr-4">
+                        <div className="absolute" style={{ top: '-30px', right: '-16px' }}>
                           <div
-                            className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-end"
+                            className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-center"
                             aria-hidden="true"
                             style={{ minWidth: 96 }}
                           >
