@@ -15,7 +15,6 @@ import {
 } from '@/lib/sanity';
 import Timeline from '@/components/Timeline';
 import ContactSection from '@/components/ContactSection';
-import featureFlag from '@/sanity/schema/featureFlag';
 import { type FeatureFlag } from '@/lib/sanity';
 
 interface HomeProps {

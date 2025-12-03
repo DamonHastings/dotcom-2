@@ -40,28 +40,41 @@ export default function ContactSection({ contactEmail, resumeUrl }: Props) {
   React.useEffect(() => {
     // expose a global helper so other components (like CurrentGoals) can open
     // the contact dialog with a pre-selected topic.
-    if (typeof window !== 'undefined') {
-      const w = window as unknown as { openContactModalWithTopic?: (topic?: string) => void };
-      const supportsDialog =
-        typeof (window as any).HTMLDialogElement !== 'undefined' &&
-        typeof (window as any).HTMLDialogElement.prototype.showModal === 'function';
-      setDialogSupported(Boolean(supportsDialog));
+    if (typeof window === 'undefined') return;
+    const win = window as typeof window & {
+      openContactModalWithTopic?: (topic?: string) => void;
+    };
+    // Narrow the type of the global HTMLDialogElement constructor (may be undefined in some runtimes)
+    const HTMLDialogElementCtor = (
+      globalThis as typeof globalThis & {
+        HTMLDialogElement?: { prototype?: { showModal?: unknown } };
+      }
+    ).HTMLDialogElement;
+    const supportsDialog = Boolean(
+      HTMLDialogElementCtor && typeof HTMLDialogElementCtor.prototype?.showModal === 'function'
+    );
+    setDialogSupported(supportsDialog);
 
-      const openModal = (topic?: string) => {
-        setModalTopic(topic);
-        if (supportsDialog) {
-          const dlg = document.getElementById('contactModal') as HTMLDialogElement | null;
-          if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
-        } else {
-          setIsFallbackOpen(true);
+    const openModal = (topic?: string) => {
+      setModalTopic(topic);
+      if (supportsDialog) {
+        const dlg = document.getElementById('contactModal') as HTMLDialogElement | null;
+        if (dlg && typeof dlg.showModal === 'function') dlg.showModal();
+      } else {
+        setIsFallbackOpen(true);
+      }
+    };
+
+    win.openContactModalWithTopic = openModal;
+    return () => {
+      try {
+        if (win && win.openContactModalWithTopic === openModal) {
+          win.openContactModalWithTopic = undefined;
         }
-      };
-
-      w.openContactModalWithTopic = openModal;
-      return () => {
-        delete w.openContactModalWithTopic;
-      };
-    }
+      } catch {
+        // ignore
+      }
+    };
   }, []);
 
   /**
