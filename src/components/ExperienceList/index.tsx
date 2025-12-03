@@ -75,16 +75,16 @@ export default function ExperienceList(props: Props) {
               <article
                 id={`experience-${exp._id}`}
                 key={exp._id}
-                className="relative grid gap-6 md:grid-cols-12 md:items-start mb-2 col-span-12 bg-white p-10"
+                className="relative grid md:gap-10 md:grid-cols-12 md:items-start mb-2 col-span-12 bg-white p-10"
                 onClick={() => {
                   // update internal card index and notify parent if provided
                   setCardIndex(idx);
                 }}
               >
-                <div className="col-span-12 md:col-span-8 mt-4">
+                <div className="col-span-12 md:col-span-7 mt-4">
                   <div>
                     <div className="relative">
-                      {exp.duration ? (
+                      {/* {exp.duration ? (
                         <div className="absolute" style={{ top: '-30px', right: '-16px' }}>
                           <div
                             className="bg-gray-100 rounded-lg px-3 py-2 shadow-sm justify-center flex flex-col items-center"
@@ -96,7 +96,7 @@ export default function ExperienceList(props: Props) {
                             </span>
                           </div>
                         </div>
-                      ) : null}
+                      ) : null} */}
 
                       <div className="mb-3">
                         <h3 className="text-lg md:text-2xl font-bold leading-tight mb-0">
@@ -155,7 +155,7 @@ export default function ExperienceList(props: Props) {
                   ) : null}
                   <div className="mb-6" />
                 </div>
-                <div className="col-span-12 md:col-span-4">
+                <div className="col-span-12 md:col-span-5">
                   {exp.technologies && exp.technologies.length ? (
                     <div className="mt-3 flex flex-wrap gap-2">
                       {exp.technologies.map((t, i) => (
@@ -185,7 +185,7 @@ export default function ExperienceList(props: Props) {
                   <div className="md:col-span-7">
                     <div className="pr-6">
                       <div className="mb-4 relative">
-                        {exp.duration ? (
+                        {/* {exp.duration ? (
                           <div className="absolute top-0 right-0 mt-4 mr-4">
                             <div
                               className="bg-white rounded-lg px-4 py-3 text-right flex flex-col items-end"
@@ -197,7 +197,7 @@ export default function ExperienceList(props: Props) {
                               </span>
                             </div>
                           </div>
-                        ) : null}
+                        ) : null} */}
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div>
