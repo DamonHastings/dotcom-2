@@ -9,6 +9,7 @@ import heroSection from '../schema/sectionHero';
 import richTextSection from '../schema/sectionRichText';
 import twoColumnSection from '../schema/sectionTwoColumn';
 import flexiblePage from '../schema/flexiblePage';
+import featureFlag from '../schema/featureFlag';
 
 export const schema: { types: SchemaTypeDefinition[] } = {
   // Static imports avoid module resolution issues & keep tree-shaking predictable.
@@ -23,5 +24,6 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     richTextSection,
     twoColumnSection,
     flexiblePage,
+    featureFlag,
   ],
 };

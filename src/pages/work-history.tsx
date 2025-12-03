@@ -8,13 +8,15 @@ import {
   fetchSiteInfo,
   fetchLanding,
   fetchExperiences,
+  fetchFeatureFlag,
   urlFor,
   type SiteInfo,
   type LandingPage,
 } from '@/lib/sanity';
 import Timeline from '@/components/Timeline';
 import ContactSection from '@/components/ContactSection';
-// Image import removed (unused)
+import featureFlag from '@/sanity/schema/featureFlag';
+import { type FeatureFlag } from '@/lib/sanity';
 
 interface HomeProps {
   projects: {
@@ -28,6 +30,7 @@ interface HomeProps {
   site: SiteInfo | null;
   landing: LandingPage | null;
   experiences: import('@/lib/sanity').Experience[];
+  featureFlags: { [key: string]: FeatureFlag };
 }
 
 type TimelineExperience = Omit<import('@/lib/sanity').Experience, 'technologies'> & {
@@ -39,6 +42,7 @@ export async function getStaticProps() {
   let site: SiteInfo | null = null;
   let landing: LandingPage | null = null;
   let experiences: HomeProps['experiences'] = [] as HomeProps['experiences'];
+  let featureFlags: { [key: string]: FeatureFlag } = {};
   try {
     projects = await fetchProjects();
     console.log(`Fetched ${projects.length} projects for homepage`);
@@ -67,8 +71,20 @@ export async function getStaticProps() {
     // eslint-disable-next-line no-console
     console.warn('Failed to fetch experiences from Sanity', err);
   }
+  try {
+    const emailFormFlag = await fetchFeatureFlag('emailFormFlag');
+    featureFlags = { emailFormFlag: emailFormFlag ?? ({} as FeatureFlag) };
+    console.log(
+      `Feature Flag - emailFormFlag: ${
+        featureFlags.emailFormFlag?.enabled ? 'enabled' : 'disabled'
+      }`
+    );
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Failed to fetch feature flag from Sanity', err);
+  }
   return {
-    props: { projects, site, landing, experiences },
+    props: { projects, site, landing, experiences, featureFlags },
     revalidate: 60, // ISR every minute
   };
 }
@@ -77,7 +93,8 @@ export default function WorkHistory({
   site,
   landing,
   experiences,
-}: Pick<HomeProps, 'site' | 'landing' | 'experiences'>) {
+  featureFlags,
+}: Pick<HomeProps, 'site' | 'landing' | 'experiences' | 'featureFlags'>) {
   const ptToPlain = (val: unknown) => {
     if (!val) return '';
     if (!Array.isArray(val)) return String(val);
@@ -147,35 +164,11 @@ export default function WorkHistory({
             <Timeline experiences={timelineExperiences} startAtEnd topN={10} stepMs={100} />
           </div>
           <div className="col-span-12 md:col-span-4 space-y-4 space-x- z-10"></div>
-          {/* Heading overlay — use relative positioning on small screens and absolute on md */}
-          {/* <div className="relative md:absolute md:bottom-0 md:right-0 bg-transparent md:bg-white md:p-5 md:px-8 md:pl-6">
-              <HeroHeading lines={heroLines} />
-            </div> */}
-          {/* Heading overlay — use relative positioning on small screens and absolute on md */}
-          {/* <div className="relative md:absolute md:bottom-0 md:right-0 bg-transparent md:bg-white md:p-5 md:px-8 md:pl-6">
-              <HeroHeading lines={heroLines} />
-            </div> */}
-
-          {/* <div className="col-span-12 md:col-span-4 space-y-8 z-10 mb-10">
-            <LeadText heading={headingTagline}>{introSummary}</LeadText>
-            <CTAList primary={primaryCtas} secondary={secondaryCtas} />
-          </div> */}
           <div className="hidden md:block md:col-span-2">{/* Spacer for layout balance */}</div>
         </section>
-
         <CareerHighlights />
-        <CurrentGoals />
-
+        {featureFlags.emailFormFlag.enabled ? <CurrentGoals /> : null}
         <ExperienceList experiences={experiences} />
-
-        {/* <section className="max-w-6xl mx-auto mb-12">
-          <h2 className="text-2xl font-bold mb-2">Things I've Done</h2>
-          <CategoryTabs categories={['Featured', 'Product', 'Design', 'Systems']} />
-        </section>
-
-        <section className="max-w-6xl mx-auto mb-24">
-          <ProjectCarousel projects={featuredProjects} />
-        </section> */}
       </main>
     </>
   );

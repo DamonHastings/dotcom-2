@@ -236,3 +236,35 @@ export async function fetchLanding(): Promise<LandingPage | null> {
     return null;
   }
 }
+
+export type FeatureFlag = {
+  _id?: string;
+  key: string;
+  enabled?: boolean;
+  description?: string | null;
+  rollout?: number | null;
+  environments?: string[] | null;
+  order?: number | null;
+};
+
+export async function fetchFeatureFlag(key: string): Promise<FeatureFlag | undefined> {
+  if (!projectId) return undefined;
+  const query = `*[_type == "featureFlag" && key == $key][0]{_id, key, enabled, description, rollout, environments, order}`;
+  try {
+    const data = await sanityClient.fetch(query, { key });
+    if (!data) return undefined;
+    return {
+      _id: data._id,
+      key: data.key,
+      enabled: typeof data.enabled === 'boolean' ? data.enabled : false,
+      description: data.description ?? null,
+      rollout: data.rollout ?? null,
+      environments: data.environments ?? null,
+      order: data.order ?? null,
+    } as FeatureFlag;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('[sanity] fetchFeatureFlag error:', err);
+    return undefined;
+  }
+}
