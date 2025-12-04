@@ -1,4 +1,5 @@
 import { defineType, defineField } from 'sanity';
+import type { ReactNode } from 'react';
 
 export default defineType({
   name: 'blogListing',
@@ -63,7 +64,7 @@ export default defineType({
       media: 'heroImage',
     },
     prepare(selection) {
-      const { title, media } = selection as { title?: string; media?: unknown };
+      const { title, media } = selection as { title?: string; media?: ReactNode };
       return {
         title: title ?? 'Blog Listing',
         media,
