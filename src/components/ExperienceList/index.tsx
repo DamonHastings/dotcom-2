@@ -81,7 +81,7 @@ export default function ExperienceList(props: Props) {
                   setCardIndex(idx);
                 }}
               >
-                <div className="col-span-12 md:col-span-7">
+                <div className="col-span-12 md:col-span-7 relative">
                   <div>
                     <div className="relative">
                       {/* {exp.duration ? (
@@ -137,7 +137,7 @@ export default function ExperienceList(props: Props) {
                   {/* spacer to separate items visually */}
                   {/* View Story button bottom-right of each experience */}
                   {exp.story ? (
-                    <div className="right-0 bottom-0 mr-0 mb-0 flex justify-end">
+                    <div className="top-0 right-0 mr-0 mb-0 flex justify-end positionL absolute">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -175,56 +175,42 @@ export default function ExperienceList(props: Props) {
         ) : (
           // Card mode: show single experience with prev/next
           <div className="relative">
+            <div className="flex items-center gap-4 mb-2">
+              {/* Back button next to title in card view (visible when in card mode) */}
+              {mode === 'card' && (
+                <button
+                  onClick={() => {
+                    setMode('list');
+                    const targetIndex = returnToIndex ?? cardIndexValue;
+                    const id = experiences[targetIndex]?._id;
+                    requestAnimationFrame(() => {
+                      const el = document.getElementById(`experience-${id}`);
+                      if (el)
+                        el.scrollIntoView({
+                          behavior: 'smooth',
+                          block: 'center',
+                        });
+                    });
+                  }}
+                  className="px-3 py-1 bg-white rounded-md shadow-sm text-sm"
+                >
+                  ← Back
+                </button>
+              )}
+            </div>
             {(() => {
               const exp = experiences[cardIndexValue];
               return (
                 <article
                   key={exp._id}
-                  className="relative grid md:grid-cols-12 md:items-start py-6 rounded-lg"
+                  className="relative grid md:grid-cols-12 md:items-start py-6 gap-10 bg-white p-10 pb-12 mb-6"
                 >
                   <div className="md:col-span-7">
                     <div className="pr-6">
                       <div className="mb-4 relative">
-                        {/* {exp.duration ? (
-                          <div className="absolute top-0 right-0 mt-4 mr-4">
-                            <div
-                              className="bg-white rounded-lg px-4 py-3 text-right flex flex-col items-end"
-                              aria-hidden="true"
-                              style={{ minWidth: 96 }}
-                            >
-                              <span className="text-lg font-bold leading-tight">
-                                {exp.duration}
-                              </span>
-                            </div>
-                          </div>
-                        ) : null} */}
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-center gap-4">
                             <div>
-                              <div className="flex items-center gap-4 mb-2">
-                                {/* Back button next to title in card view (visible when in card mode) */}
-                                {mode === 'card' && (
-                                  <button
-                                    onClick={() => {
-                                      setMode('list');
-                                      const targetIndex = returnToIndex ?? cardIndexValue;
-                                      const id = experiences[targetIndex]?._id;
-                                      requestAnimationFrame(() => {
-                                        const el = document.getElementById(`experience-${id}`);
-                                        if (el)
-                                          el.scrollIntoView({
-                                            behavior: 'smooth',
-                                            block: 'center',
-                                          });
-                                      });
-                                    }}
-                                    className="px-3 py-1 bg-white rounded-md shadow-sm text-sm"
-                                  >
-                                    ← Back
-                                  </button>
-                                )}
-                              </div>
-
                               <h3 className="text-lg md:text-2xl font-extrabold leading-tight">
                                 {exp.company}
                               </h3>

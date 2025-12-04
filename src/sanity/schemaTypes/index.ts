@@ -5,6 +5,8 @@ import landingPage from '../schema/landingPage';
 import experience from '../schema/experience';
 import cta from '../schema/cta';
 import learnMore from '../schema/learnMore';
+import blogPost from '../schema/blogPost';
+import blogListing from '../schema/blogListing';
 import heroSection from '../schema/sectionHero';
 import richTextSection from '../schema/sectionRichText';
 import twoColumnSection from '../schema/sectionTwoColumn';
@@ -20,6 +22,8 @@ export const schema: { types: SchemaTypeDefinition[] } = {
     experience,
     cta,
     learnMore,
+    blogPost,
+    blogListing,
     heroSection,
     richTextSection,
     twoColumnSection,
